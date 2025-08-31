@@ -22,6 +22,18 @@ export const flareCoston2 = {
   testnet: true,
 } as const;
 
+// Log de configuración para debugging
+if (typeof window !== 'undefined') {
+  console.log('🔧 Configuración de Wagmi:', {
+    appName: ENV_CONFIG.APP_NAME,
+    projectId: ENV_CONFIG.WALLETCONNECT_PROJECT_ID,
+    chainId: ENV_CONFIG.CHAIN_ID,
+    networkName: ENV_CONFIG.NETWORK_NAME,
+    rpcUrl: ENV_CONFIG.RPC_URL,
+    contractAddress: ENV_CONFIG.CONTRACT_ADDRESS
+  });
+}
+
 export const config = getDefaultConfig({
   appName: ENV_CONFIG.APP_NAME,
   projectId: ENV_CONFIG.WALLETCONNECT_PROJECT_ID,

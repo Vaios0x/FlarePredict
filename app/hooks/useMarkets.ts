@@ -132,13 +132,15 @@ export function useMarkets() {
 
   // Cargar mercados cuando el hook esté listo
   useEffect(() => {
+    console.log('🔄 useEffect triggered - isReady:', isReady);
     if (isReady) {
       console.log('🔄 Hook listo, cargando mercados...');
       loadMarkets();
     } else {
       console.log('⏳ Hook no está listo, esperando...');
+      console.log('🔍 Estado actual:', { isReady, address });
     }
-  }, [isReady]);
+  }, [isReady, address]);
 
   // Funciones de utilidad
   const calculateOdds = (market: Market, side: 'yes' | 'no'): number => {

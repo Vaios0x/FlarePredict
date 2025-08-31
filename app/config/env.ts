@@ -24,7 +24,7 @@ export const ENV_CONFIG = {
   // App Configuration
   APP_NAME: process.env.NEXT_PUBLIC_APP_NAME || 'FlarePredict',
   APP_DESCRIPTION: process.env.NEXT_PUBLIC_APP_DESCRIPTION || 'Predicciones en Tiempo Real en Flare Network',
-  APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'https://flarepredict.vercel.app',
+  APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'https://flare-predict-lc14.vercel.app',
   
   // Network Configuration
   NETWORK_NAME: process.env.NEXT_PUBLIC_NETWORK_NAME || 'Coston2 Testnet',
@@ -54,5 +54,6 @@ export const validateEnvConfig = () => {
 
 // Verificar configuración al cargar
 if (typeof window !== 'undefined') {
+  console.log('🔧 ENV_CONFIG cargado:', ENV_CONFIG);
   validateEnvConfig();
 }

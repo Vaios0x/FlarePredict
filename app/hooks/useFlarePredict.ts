@@ -281,7 +281,9 @@ export function useFlarePredict() {
     walletClient: !!walletClient,
     isConnected,
     chainId,
-    isReady: isReadyState
+    address,
+    isReady: isReadyState,
+    contractAddress
   });
   
   return {

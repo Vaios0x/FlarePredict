@@ -381,6 +381,31 @@ function FlarePredictApp() {
   if (currentSection === 'home') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900">
+        {/* Header with Connect Button */}
+        <header className="border-b border-white/10 backdrop-blur-lg bg-black/20 relative z-20">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0">
+              <div className="flex items-center space-x-3 sm:space-x-4">
+                <motion.div
+                  initial={{ rotate: 0 }}
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  className="text-3xl sm:text-4xl"
+                  role="img"
+                  aria-label="Cristal de predicción girando"
+                >
+                  🔮
+                </motion.div>
+                <div>
+                  <h1 className="text-xl sm:text-2xl font-bold text-white">FlarePredict</h1>
+                  <p className="text-xs sm:text-sm text-gray-300">Predicciones en Tiempo Real</p>
+                </div>
+              </div>
+              <ConnectButton onConnect={() => setCurrentSection('predict')} />
+            </div>
+          </div>
+        </header>
+        
         <Navigation 
           currentSection={currentSection} 
           onSectionChange={setCurrentSection} 

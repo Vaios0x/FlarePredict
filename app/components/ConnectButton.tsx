@@ -7,7 +7,11 @@ import { Wallet, LogOut, Plus, Zap, Shield, CheckCircle, AlertCircle, RefreshCw 
 import { getTokenSymbol, getChainName } from '../config/chains';
 import { useState, useEffect } from 'react';
 
-export function ConnectButton() {
+interface ConnectButtonProps {
+  onConnect?: () => void;
+}
+
+export function ConnectButton({ onConnect }: ConnectButtonProps = {}) {
   const { isConnected, address, status } = useAccount();
   const { disconnect } = useDisconnect();
   const { data: balance } = useBalance({ address });
@@ -15,12 +19,16 @@ export function ConnectButton() {
   const [isAddingNetwork, setIsAddingNetwork] = useState(false);
   const [lastError, setLastError] = useState<string | null>(null);
 
-  // Limpiar errores cuando cambie el estado
+  // Limpiar errores cuando cambie el estado y redirigir si es necesario
   useEffect(() => {
     if (isConnected) {
       setLastError(null);
+      // Llamar a la función de redirección si está disponible
+      if (onConnect) {
+        onConnect();
+      }
     }
-  }, [isConnected]);
+  }, [isConnected, onConnect]);
 
   // Función para agregar Coston2 a MetaMask
   const addCoston2Network = async () => {

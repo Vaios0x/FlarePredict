@@ -38,6 +38,24 @@ export function ConnectButton({ onConnect }: ConnectButtonProps = {}) {
       console.log('MetaMask detectado, procediendo...');
       setIsAddingNetwork(true);
       try {
+        // Primero intentar cambiar a Coston2 si ya está agregada
+        try {
+          await window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0x72' }],
+          });
+          console.log('Cambiado a red Coston2');
+          setLastError(null);
+          return;
+        } catch (switchError: any) {
+          if (switchError.code === 4902) {
+            console.log('Coston2 no está agregada, procediendo a agregarla...');
+          } else {
+            console.log('Error al cambiar a Coston2:', switchError);
+          }
+        }
+
+        // Si no está agregada, agregarla
         const result = await window.ethereum.request({
           method: 'wallet_addEthereumChain',
           params: [{
@@ -57,7 +75,7 @@ export function ConnectButton({ onConnect }: ConnectButtonProps = {}) {
         console.log('Coston2 agregada exitosamente a MetaMask:', result);
         setLastError(null);
         
-        // Opcional: cambiar a la red Coston2 después de agregarla
+        // Cambiar a la red Coston2 después de agregarla
         try {
           await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
@@ -65,9 +83,7 @@ export function ConnectButton({ onConnect }: ConnectButtonProps = {}) {
           });
           console.log('Cambiado a red Coston2');
         } catch (switchError: any) {
-          if (switchError.code === 4902) {
-            console.log('La red ya está agregada pero no se pudo cambiar automáticamente');
-          }
+          console.log('Error al cambiar automáticamente a Coston2:', switchError);
         }
       } catch (error: any) {
         console.error('Error agregando Coston2:', error);
@@ -224,9 +240,13 @@ export function ConnectButton({ onConnect }: ConnectButtonProps = {}) {
                                 </span>
                               </div>
                               <div className="flex items-center space-x-1">
-                                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-                                <span className="text-xs text-gray-400">
-                                  {getChainName(chainId)}
+                                <div className={`w-2 h-2 rounded-full animate-pulse ${
+                                  chainId === 114 ? 'bg-green-400' : 'bg-red-400'
+                                }`} />
+                                <span className={`text-xs ${
+                                  chainId === 114 ? 'text-green-400' : 'text-red-400'
+                                }`}>
+                                  {chainId === 114 ? 'Coston2 Testnet' : getChainName(chainId)}
                                 </span>
                               </div>
                             </div>
@@ -256,28 +276,38 @@ export function ConnectButton({ onConnect }: ConnectButtonProps = {}) {
           }}
         </RainbowKitConnectButton.Custom>
 
-        {/* Botón para agregar Coston2 */}
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={addCoston2Network}
-          disabled={isAddingNetwork}
-          className="group relative overflow-hidden px-3 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-emerald-500/20 to-green-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl hover:from-emerald-500/30 hover:to-green-500/30 hover:border-emerald-400/50 transition-all duration-300 backdrop-blur-sm disabled:opacity-50 w-full sm:w-auto"
-          aria-label="Agregar Coston2 Testnet a MetaMask"
-        >
-          <div className="flex items-center justify-center space-x-2">
-            {isAddingNetwork ? (
-              <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-            ) : (
-              <Plus className="w-4 h-4 sm:w-5 sm:h-5 group-hover:rotate-90 transition-transform duration-300" />
-            )}
-            <span className="text-sm sm:text-base font-medium">
-              {isAddingNetwork ? 'Agregando...' : 'Coston2'}
-            </span>
-            <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 group-hover:animate-pulse" />
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        </motion.button>
+              {/* Botón para agregar/cambiar a Coston2 */}
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={addCoston2Network}
+        disabled={isAddingNetwork}
+        className={`group relative overflow-hidden px-3 sm:px-4 py-2 sm:py-2.5 border rounded-xl transition-all duration-300 backdrop-blur-sm disabled:opacity-50 w-full sm:w-auto ${
+          chainId === 114 
+            ? 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-400 hover:from-green-500/30 hover:to-emerald-500/30 hover:border-green-400/50'
+            : 'bg-gradient-to-r from-orange-500/20 to-red-500/20 border-orange-500/30 text-orange-400 hover:from-orange-500/30 hover:to-red-500/30 hover:border-orange-400/50'
+        }`}
+        aria-label={chainId === 114 ? "Ya estás en Coston2" : "Cambiar a Coston2 Testnet"}
+      >
+        <div className="flex items-center justify-center space-x-2">
+          {isAddingNetwork ? (
+            <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+          ) : chainId === 114 ? (
+            <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+          ) : (
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5 group-hover:rotate-90 transition-transform duration-300" />
+          )}
+          <span className="text-sm sm:text-base font-medium">
+            {isAddingNetwork ? 'Cambiando...' : chainId === 114 ? 'Coston2 ✓' : 'Cambiar a Coston2'}
+          </span>
+          {chainId !== 114 && <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 group-hover:animate-pulse" />}
+        </div>
+        <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
+          chainId === 114 
+            ? 'bg-gradient-to-r from-green-500/10 to-emerald-500/10'
+            : 'bg-gradient-to-r from-orange-500/10 to-red-500/10'
+        }`} />
+      </motion.button>
 
         {/* Mostrar errores */}
         {lastError && (
@@ -348,9 +378,13 @@ export function ConnectButton({ onConnect }: ConnectButtonProps = {}) {
                 </span>
               </div>
               <div className="flex items-center space-x-1">
-                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-                <span className="text-xs text-gray-400">
-                  {getChainName(chainId)}
+                <div className={`w-2 h-2 rounded-full animate-pulse ${
+                  chainId === 114 ? 'bg-green-400' : 'bg-red-400'
+                }`} />
+                <span className={`text-xs ${
+                  chainId === 114 ? 'text-green-400' : 'text-red-400'
+                }`}>
+                  {chainId === 114 ? 'Coston2 Testnet' : getChainName(chainId)}
                 </span>
               </div>
             </div>
@@ -373,27 +407,37 @@ export function ConnectButton({ onConnect }: ConnectButtonProps = {}) {
         </div>
       </motion.div>
       
-      {/* Botón para agregar Coston2 */}
+      {/* Botón para agregar/cambiar a Coston2 */}
       <motion.button
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         onClick={addCoston2Network}
         disabled={isAddingNetwork}
-        className="group relative overflow-hidden px-3 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-emerald-500/20 to-green-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl hover:from-emerald-500/30 hover:to-green-500/30 hover:border-emerald-400/50 transition-all duration-300 backdrop-blur-sm disabled:opacity-50 w-full sm:w-auto"
-        aria-label="Agregar Coston2 Testnet a MetaMask"
+        className={`group relative overflow-hidden px-3 sm:px-4 py-2 sm:py-2.5 border rounded-xl transition-all duration-300 backdrop-blur-sm disabled:opacity-50 w-full sm:w-auto ${
+          chainId === 114 
+            ? 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-400 hover:from-green-500/30 hover:to-emerald-500/30 hover:border-green-400/50'
+            : 'bg-gradient-to-r from-orange-500/20 to-red-500/20 border-orange-500/30 text-orange-400 hover:from-orange-500/30 hover:to-red-500/30 hover:border-orange-400/50'
+        }`}
+        aria-label={chainId === 114 ? "Ya estás en Coston2" : "Cambiar a Coston2 Testnet"}
       >
         <div className="flex items-center justify-center space-x-2">
           {isAddingNetwork ? (
             <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+          ) : chainId === 114 ? (
+            <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
           ) : (
             <Plus className="w-4 h-4 sm:w-5 sm:h-5 group-hover:rotate-90 transition-transform duration-300" />
           )}
           <span className="text-sm sm:text-base font-medium">
-            {isAddingNetwork ? 'Agregando...' : 'Coston2'}
+            {isAddingNetwork ? 'Cambiando...' : chainId === 114 ? 'Coston2 ✓' : 'Cambiar a Coston2'}
           </span>
-          <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 group-hover:animate-pulse" />
+          {chainId !== 114 && <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 group-hover:animate-pulse" />}
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
+          chainId === 114 
+            ? 'bg-gradient-to-r from-green-500/10 to-emerald-500/10'
+            : 'bg-gradient-to-r from-orange-500/10 to-red-500/10'
+        }`} />
       </motion.button>
     </motion.div>
   );

@@ -37,6 +37,6 @@ if (typeof window !== 'undefined') {
 export const config = getDefaultConfig({
   appName: ENV_CONFIG.APP_NAME,
   projectId: ENV_CONFIG.WALLETCONNECT_PROJECT_ID,
-  chains: [flareCoston2, mainnet, sepolia],
+  chains: [flareCoston2], // Solo Coston2, sin mainnet ni sepolia
   ssr: true,
 });

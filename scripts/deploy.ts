@@ -1,4 +1,4 @@
-import { ethers } from "hardhat";
+import { ethers, run } from "hardhat";
 
 async function main() {
   console.log("🚀 Deploying FlarePredict to Flare Network...");

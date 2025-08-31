@@ -1,6 +1,5 @@
-import { http, createConfig } from 'wagmi';
+import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { mainnet, sepolia } from 'wagmi/chains';
-import { injected, metaMask, walletConnect } from 'wagmi/connectors';
 import { ENV_CONFIG } from './env';
 
 // Configuración personalizada para Flare Network
@@ -23,24 +22,9 @@ export const flareCoston2 = {
   testnet: true,
 } as const;
 
-export const config = createConfig({
+export const config = getDefaultConfig({
+  appName: ENV_CONFIG.APP_NAME,
+  projectId: ENV_CONFIG.WALLETCONNECT_PROJECT_ID,
   chains: [flareCoston2, mainnet, sepolia],
-  connectors: [
-    injected(),
-    metaMask(),
-    walletConnect({ 
-      projectId: ENV_CONFIG.WALLETCONNECT_PROJECT_ID,
-      metadata: {
-        name: ENV_CONFIG.APP_NAME,
-        description: ENV_CONFIG.APP_DESCRIPTION,
-        url: ENV_CONFIG.APP_URL,
-        icons: ['https://flarepredict.vercel.app/icon.png']
-      }
-    }),
-  ],
-  transports: {
-    [flareCoston2.id]: http(),
-    [mainnet.id]: http(),
-    [sepolia.id]: http(),
-  },
+  ssr: true,
 });

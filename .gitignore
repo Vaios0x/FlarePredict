@@ -71,3 +71,8 @@ typechain-types/
 *MIGRATION*
 *DEPLOYMENT*
 *INTEGRATION*
+
+# Project configuration
+project-id
+project-id.txt
+project-id.json

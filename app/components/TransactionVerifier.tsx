@@ -31,7 +31,7 @@ export function TransactionVerifier({ txHash, onComplete, onError }: Transaction
 
         if (receipt.status === 'success') {
           setStatus('confirmed');
-          setConfirmations(receipt.confirmations || 0);
+          setConfirmations(1); // Confirmado = 1 confirmación
           onComplete?.(true);
         } else {
           setStatus('failed');

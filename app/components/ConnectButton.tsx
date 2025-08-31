@@ -158,20 +158,6 @@ export function ConnectButton() {
             </span>
           </motion.div>
         )}
-
-        {/* Información de debug */}
-        <div className="text-xs text-gray-400 space-y-1">
-          <div>Conectores disponibles: {connectors.filter(c => c.ready).length}</div>
-          <div>Estado: {status}</div>
-          {connectors.map((connector, index) => (
-            <div key={index} className="flex items-center space-x-2">
-              <span>{connector.name}:</span>
-              <span className={connector.ready ? 'text-green-400' : 'text-red-400'}>
-                {connector.ready ? 'Listo' : 'No disponible'}
-              </span>
-            </div>
-          ))}
-        </div>
       </motion.div>
     );
   }

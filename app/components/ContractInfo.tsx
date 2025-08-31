@@ -3,12 +3,14 @@
 import { useFlarePredict } from '../hooks/useFlarePredict';
 import { useMarkets } from '../hooks/useMarkets';
 import { getChainName } from '../config/chains';
+import { useChainId } from 'wagmi';
 import { motion } from 'framer-motion';
 import { Activity, Users, DollarSign, Clock } from 'lucide-react';
 
 export function ContractInfo() {
-  const { contractAddress, chainId, getTotalVolume, getTotalFeesCollected, isReady } = useFlarePredict();
+  const { contractAddress, getTotalVolume, getTotalFeesCollected, isReady } = useFlarePredict();
   const { markets, loading } = useMarkets();
+  const chainId = useChainId();
 
   if (!isReady) {
     return (

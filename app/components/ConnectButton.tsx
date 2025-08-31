@@ -54,28 +54,6 @@ export function ConnectButton() {
     }
   };
 
-  // Función para conectar wallet
-  const handleConnect = () => {
-    try {
-      setLastError(null);
-      const availableConnectors = connectors.filter(c => c.ready);
-      
-      if (availableConnectors.length === 0) {
-        setLastError('No hay wallets disponibles. Instala MetaMask o WalletConnect.');
-        return;
-      }
-
-      // Intentar conectar con el primer conector disponible
-      const connector = availableConnectors[0];
-      console.log('Intentando conectar con:', connector.name);
-      
-      connect({ connector });
-    } catch (error) {
-      console.error('Error conectando wallet:', error);
-      setLastError('Error al conectar wallet. Verifica que MetaMask esté instalado.');
-    }
-  };
-
   // Mostrar estado de conexión
   if (status === 'connecting') {
     return (
@@ -105,42 +83,25 @@ export function ConnectButton() {
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col space-y-3"
       >
-        {/* Botón de conectar */}
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={handleConnect}
-          disabled={isPending}
-          className="group relative overflow-hidden px-6 py-3 bg-gradient-to-r from-purple-500/20 to-blue-500/20 border border-purple-500/30 text-purple-400 rounded-xl hover:from-purple-500/30 hover:to-blue-500/30 hover:border-purple-400/50 transition-all duration-300 backdrop-blur-sm disabled:opacity-50"
-          aria-label="Conectar wallet"
-        >
-          <div className="flex items-center justify-center space-x-2">
-            <Wallet className="w-5 h-5" />
-            <span className="text-sm font-medium">
-              {isPending ? 'Conectando...' : 'Conectar Wallet'}
-            </span>
-          </div>
-        </motion.button>
-        
         {/* Botón para agregar Coston2 */}
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={addCoston2Network}
           disabled={isAddingNetwork}
-          className="group relative overflow-hidden px-4 py-2.5 bg-gradient-to-r from-emerald-500/20 to-green-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl hover:from-emerald-500/30 hover:to-green-500/30 hover:border-emerald-400/50 transition-all duration-300 backdrop-blur-sm disabled:opacity-50"
+          className="group relative overflow-hidden px-3 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-emerald-500/20 to-green-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl hover:from-emerald-500/30 hover:to-green-500/30 hover:border-emerald-400/50 transition-all duration-300 backdrop-blur-sm disabled:opacity-50 w-full sm:w-auto"
           aria-label="Agregar Coston2 Testnet a MetaMask"
         >
           <div className="flex items-center justify-center space-x-2">
             {isAddingNetwork ? (
-              <RefreshCw className="w-4 h-4 animate-spin" />
+              <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
             ) : (
-              <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
+              <Plus className="w-4 h-4 sm:w-5 sm:h-5 group-hover:rotate-90 transition-transform duration-300" />
             )}
-            <span className="text-sm font-medium">
+            <span className="text-sm sm:text-base font-medium">
               {isAddingNetwork ? 'Agregando...' : 'Coston2'}
             </span>
-            <Zap className="w-4 h-4 text-yellow-400 group-hover:animate-pulse" />
+            <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 group-hover:animate-pulse" />
           </div>
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </motion.button>
@@ -245,19 +206,19 @@ export function ConnectButton() {
         whileTap={{ scale: 0.98 }}
         onClick={addCoston2Network}
         disabled={isAddingNetwork}
-        className="group relative overflow-hidden px-4 py-2.5 bg-gradient-to-r from-emerald-500/20 to-green-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl hover:from-emerald-500/30 hover:to-green-500/30 hover:border-emerald-400/50 transition-all duration-300 backdrop-blur-sm disabled:opacity-50"
+        className="group relative overflow-hidden px-3 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-emerald-500/20 to-green-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl hover:from-emerald-500/30 hover:to-green-500/30 hover:border-emerald-400/50 transition-all duration-300 backdrop-blur-sm disabled:opacity-50 w-full sm:w-auto"
         aria-label="Agregar Coston2 Testnet a MetaMask"
       >
         <div className="flex items-center justify-center space-x-2">
           {isAddingNetwork ? (
-            <RefreshCw className="w-4 h-4 animate-spin" />
+            <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
           ) : (
-            <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5 group-hover:rotate-90 transition-transform duration-300" />
           )}
-          <span className="text-sm font-medium">
+          <span className="text-sm sm:text-base font-medium">
             {isAddingNetwork ? 'Agregando...' : 'Coston2'}
           </span>
-          <Zap className="w-4 h-4 text-yellow-400 group-hover:animate-pulse" />
+          <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 group-hover:animate-pulse" />
         </div>
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </motion.button>

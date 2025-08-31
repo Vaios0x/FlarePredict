@@ -1,0 +1,73 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build outputs
+.next/
+out/
+build/
+dist/
+
+# TypeScript
+*.tsbuildinfo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Hardhat
+cache/
+artifacts/
+typechain-types/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Documentation and presentation files
+*.md
+!README.md
+
+# Pitch and demo files
+*pitch*
+*demo*
+*PITCH*
+*DEMO*
+*PRESENTATION*
+*EXECUTIVE*
+*SLIDES*
+*GUIDE*
+*SUMMARY*
+*CHANGELOG*
+*SOLUTION*
+*MIGRATION*
+*DEPLOYMENT*
+*INTEGRATION*

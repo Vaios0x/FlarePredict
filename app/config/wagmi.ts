@@ -1,23 +1,24 @@
 import { http, createConfig } from 'wagmi';
 import { mainnet, sepolia } from 'wagmi/chains';
 import { injected, metaMask, walletConnect } from 'wagmi/connectors';
+import { ENV_CONFIG } from './env';
 
 // Configuración personalizada para Flare Network
 export const flareCoston2 = {
-  id: 114,
-  name: 'Coston2 Testnet',
+  id: ENV_CONFIG.CHAIN_ID,
+  name: ENV_CONFIG.NETWORK_NAME,
   network: 'coston2',
   nativeCurrency: {
-    decimals: 18,
-    name: 'C2FLR',
-    symbol: 'C2FLR',
+    decimals: ENV_CONFIG.NETWORK_DECIMALS,
+    name: ENV_CONFIG.NETWORK_CURRENCY,
+    symbol: ENV_CONFIG.NETWORK_CURRENCY,
   },
   rpcUrls: {
-    public: { http: ['https://coston2-api.flare.network/ext/C/rpc'] },
-    default: { http: ['https://coston2-api.flare.network/ext/C/rpc'] },
+    public: { http: [ENV_CONFIG.RPC_URL] },
+    default: { http: [ENV_CONFIG.RPC_URL] },
   },
   blockExplorers: {
-    default: { name: 'Coston2 Explorer', url: 'https://coston2-explorer.flare.network' },
+    default: { name: 'Coston2 Explorer', url: ENV_CONFIG.BLOCK_EXPLORER },
   },
   testnet: true,
 } as const;
@@ -28,7 +29,7 @@ export const config = createConfig({
     injected(),
     metaMask(),
     walletConnect({ 
-      projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || '95004ec3a30ad2f28fa8914e345297da' 
+      projectId: ENV_CONFIG.WALLETCONNECT_PROJECT_ID
     }),
   ],
   transports: {

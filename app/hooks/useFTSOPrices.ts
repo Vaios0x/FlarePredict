@@ -2,40 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useReadContract, usePublicClient } from 'wagmi';
-import { getContractAddress } from '../config/contracts';
-
-// Feed IDs oficiales de FTSOv2 según la documentación
-const FTSO_FEED_IDS = {
-  FLR_USD: '0x01464c522f55534400000000000000000000000000', // "FLR/USD"
-  BTC_USD: '0x014254432f55534400000000000000000000000000', // "BTC/USD"
-  ETH_USD: '0x014554482f55534400000000000000000000000000', // "ETH/USD"
-  SGB_USD: '0x015347422f55534400000000000000000000000000', // "SGB/USD"
-} as const;
-
-// ABI para FTSOv2 según la documentación oficial
-const FTSO_V2_ABI = [
-  {
-    "inputs": [{"internalType": "bytes21", "name": "_feedId", "type": "bytes21"}],
-    "name": "getFeedById",
-    "outputs": [
-      {"internalType": "uint256", "name": "_feedValue", "type": "uint256"},
-      {"internalType": "int8", "name": "_decimals", "type": "int8"},
-      {"internalType": "uint64", "name": "_timestamp", "type": "uint64"}
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [{"internalType": "bytes21", "name": "_feedId", "type": "bytes21"}],
-    "name": "getFeedByIdInWei",
-    "outputs": [
-      {"internalType": "uint256", "name": "_feedValue", "type": "uint256"},
-      {"internalType": "uint64", "name": "_timestamp", "type": "uint64"}
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  }
-] as const;
+import { getContractAddress, FTSO_FEEDS, FTSO_V2_ABI, CONTRACT_REGISTRY_ABI } from '../config/contracts';
 
 export function useFTSOPrices() {
   const [btcPrice, setBtcPrice] = useState<string>('0');
@@ -45,41 +12,125 @@ export function useFTSOPrices() {
   const [error, setError] = useState<string | null>(null);
   
   const publicClient = usePublicClient();
-  const ftsoV2Address = getContractAddress('FTSO_V2');
+  const contractRegistryAddress = getContractAddress('ContractRegistry');
 
-  // Función para obtener precio FTSO real usando la documentación oficial
+  // Función para obtener la dirección del FTSO V2 desde el ContractRegistry
+  const getFtsoV2Address = async () => {
+    if (!publicClient) return null;
+    
+    try {
+      // Primero intentar obtener la dirección de producción
+      const ftsoV2Address = await publicClient.readContract({
+        address: contractRegistryAddress as `0x${string}`,
+        abi: CONTRACT_REGISTRY_ABI,
+        functionName: 'getFtsoV2',
+      });
+      
+      return ftsoV2Address;
+    } catch (error) {
+      console.log('⚠️ No se pudo obtener FTSO V2 de producción, intentando test...');
+      
+      try {
+        // Fallback a test FTSO
+        const testFtsoV2Address = await publicClient.readContract({
+          address: contractRegistryAddress as `0x${string}`,
+          abi: CONTRACT_REGISTRY_ABI,
+          functionName: 'getTestFtsoV2',
+        });
+        
+        return testFtsoV2Address;
+      } catch (testError) {
+        console.error('❌ Error obteniendo dirección FTSO:', testError);
+        return null;
+      }
+    }
+  };
+
+  // Función para obtener precio FTSO usando la documentación oficial
   const getFTSOPrice = async (feedId: string) => {
     if (!publicClient) return '0';
     
     try {
+      // Obtener la dirección del FTSO V2
+      const ftsoV2Address = await getFtsoV2Address();
+      if (!ftsoV2Address) {
+        throw new Error('No se pudo obtener la dirección del FTSO V2');
+      }
+
+      console.log(`🔗 Usando FTSO V2 en: ${ftsoV2Address}`);
+      
       // Usar el contrato FTSOv2 oficial según la documentación
       // https://dev.flare.network/ftso/guides/build-first-app
       const result = await publicClient.readContract({
         address: ftsoV2Address as `0x${string}`,
         abi: FTSO_V2_ABI,
-        functionName: 'getFeedByIdInWei',
+        functionName: 'getFeedById',
         args: [feedId] as any,
       });
 
-      const priceInWei = result[0];
-      const timestamp = result[1];
+      const priceValue = result[0];
+      const decimals = result[1];
+      const timestamp = result[2];
 
-      // Convertir de wei a precio normal
-      const price = parseFloat(priceInWei.toString()) / 1e18;
+      // Convertir el precio usando los decimales correctos
+      const price = parseFloat(priceValue.toString()) / Math.pow(10, Number(decimals));
       
-      return price.toFixed(2);
+      console.log(`✅ Precio obtenido: $${price.toFixed(6)} (decimals: ${decimals})`);
+      return price.toFixed(6);
     } catch (error) {
-      console.error('Error getting FTSO price for feed', feedId, ':', error);
+      console.error('❌ Error obteniendo precio FTSO para feed', feedId, ':', error);
       
       // Fallback a precios simulados si hay error
       const fallbackPrices: { [key: string]: string } = {
-        [FTSO_FEED_IDS.BTC_USD]: '43250.00',
-        [FTSO_FEED_IDS.ETH_USD]: '2650.00',
-        [FTSO_FEED_IDS.FLR_USD]: '0.0250',
-        [FTSO_FEED_IDS.SGB_USD]: '0.0150',
+        [FTSO_FEEDS.BTC_USD]: '43250.00',
+        [FTSO_FEEDS.ETH_USD]: '2650.00',
+        [FTSO_FEEDS.FLR_USD]: '0.0250',
+        [FTSO_FEEDS.SGB_USD]: '0.0150',
+        [FTSO_FEEDS.XRP_USD]: '0.5800',
+        [FTSO_FEEDS.LTC_USD]: '68.50',
+        [FTSO_FEEDS.DOGE_USD]: '0.0850',
+        [FTSO_FEEDS.ADA_USD]: '0.4800',
       };
       
+      console.log(`🔄 Usando precio simulado para ${feedId}: ${fallbackPrices[feedId] || '0'}`);
       return fallbackPrices[feedId] || '0';
+    }
+  };
+
+  // Función para obtener múltiples precios a la vez
+  const getMultipleFTSOPrices = async (feedIds: string[]) => {
+    if (!publicClient) return {};
+    
+    try {
+      const ftsoV2Address = await getFtsoV2Address();
+      if (!ftsoV2Address) {
+        throw new Error('No se pudo obtener la dirección del FTSO V2');
+      }
+
+      const result = await publicClient.readContract({
+        address: ftsoV2Address as `0x${string}`,
+        abi: FTSO_V2_ABI,
+        functionName: 'getFeedsById',
+        args: [feedIds] as any,
+      });
+
+      const feedValues = result[0];
+      const decimals = result[1];
+      const timestamp = result[2];
+
+      const prices: { [key: string]: string } = {};
+      
+      feedIds.forEach((feedId, index) => {
+        const priceValue = feedValues[index];
+        const decimal = decimals[index];
+        const price = parseFloat(priceValue.toString()) / Math.pow(10, Number(decimal));
+        prices[feedId] = price.toFixed(6);
+      });
+
+      return prices;
+    } catch (error) {
+      console.error('❌ Error obteniendo múltiples precios FTSO:', error);
+      return {};
     }
   };
 
@@ -93,9 +144,9 @@ export function useFTSOPrices() {
       
       // Obtener precios de diferentes feeds usando IDs oficiales
       const [btc, eth, flr] = await Promise.all([
-        getFTSOPrice(FTSO_FEED_IDS.BTC_USD),
-        getFTSOPrice(FTSO_FEED_IDS.ETH_USD),
-        getFTSOPrice(FTSO_FEED_IDS.FLR_USD),
+        getFTSOPrice(FTSO_FEEDS.BTC_USD),
+        getFTSOPrice(FTSO_FEEDS.ETH_USD),
+        getFTSOPrice(FTSO_FEEDS.FLR_USD),
       ]);
       
       setBtcPrice(btc);
@@ -103,8 +154,8 @@ export function useFTSOPrices() {
       setFlrPrice(flr);
       
     } catch (error) {
-      console.error('Error loading FTSO prices:', error);
-      setError('Error cargando precios FTSO');
+      console.error('❌ Error cargando precios FTSO:', error);
+      setError('Error loading FTSO prices');
     } finally {
       setLoading(false);
     }
@@ -122,11 +173,11 @@ export function useFTSOPrices() {
   // Función para obtener precio de cualquier feed
   const getPriceByFeedId = (feedId: string) => {
     switch (feedId) {
-      case FTSO_FEED_IDS.BTC_USD:
+      case FTSO_FEEDS.BTC_USD:
         return btcPrice;
-      case FTSO_FEED_IDS.ETH_USD:
+      case FTSO_FEEDS.ETH_USD:
         return ethPrice;
-      case FTSO_FEED_IDS.FLR_USD:
+      case FTSO_FEEDS.FLR_USD:
         return flrPrice;
       default:
         return '0';
@@ -141,6 +192,8 @@ export function useFTSOPrices() {
     error,
     reload: loadPrices,
     getPriceByFeedId,
-    FTSO_FEED_IDS,
+    getFTSOPrice,
+    getMultipleFTSOPrices,
+    FTSO_FEEDS,
   };
 }

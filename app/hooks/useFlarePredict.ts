@@ -24,6 +24,9 @@ export function useFlarePredict() {
     threshold: string,
     deadline: number
   ) => {
+    console.log('🚀 Iniciando creación de mercado...');
+    console.log('Estado de conexión:', { isConnected, walletClient: !!walletClient });
+    
     if (!isConnected || !walletClient) throw new Error('Wallet no conectada');
     
     // Validar que el deadline esté en el futuro y dentro del rango permitido
@@ -40,17 +43,19 @@ export function useFlarePredict() {
       throw new Error('El título debe tener entre 1 y 100 caracteres');
     }
     
-    console.log('Creando mercado con datos:', {
+    console.log('📋 Datos del mercado a crear:', {
       title,
       description,
       feedId,
       marketType,
       threshold,
       deadline,
-      currentTime
+      currentTime,
+      contractAddress
     });
     
     try {
+      console.log('📝 Ejecutando transacción createMarket...');
       const result = await writeContractAsync({
         address: contractAddress as `0x${string}`,
         abi: FlarePredict__factory.abi,
@@ -65,10 +70,10 @@ export function useFlarePredict() {
         ],
       });
       
-      console.log('Mercado creado exitosamente:', result);
+      console.log('✅ Mercado creado exitosamente:', result);
       return result;
     } catch (error) {
-      console.error('Error creando mercado:', error);
+      console.error('❌ Error creando mercado:', error);
       
       // Manejar errores específicos
       if (error instanceof Error) {
@@ -96,6 +101,9 @@ export function useFlarePredict() {
   };
 
   const placeBet = async (marketId: number, isYes: boolean, amount: string) => {
+    console.log('💰 Iniciando colocación de apuesta...');
+    console.log('Estado de conexión:', { isConnected, walletClient: !!walletClient });
+    
     if (!isConnected || !walletClient) throw new Error('Wallet no conectada');
     
     // Validar que el wallet esté conectado y listo
@@ -111,7 +119,7 @@ export function useFlarePredict() {
     
     // Ejecutar la transacción real para todos los mercados - el contrato validará todo
     try {
-      console.log('Ejecutando transacción de apuesta con:', {
+      console.log('📝 Ejecutando transacción de apuesta con:', {
         marketId,
         isYes,
         amount: amountBigInt.toString(),
@@ -127,10 +135,10 @@ export function useFlarePredict() {
         value: amountBigInt,
       });
       
-      console.log('Transacción de apuesta ejecutada exitosamente:', result);
+      console.log('✅ Transacción de apuesta ejecutada exitosamente:', result);
       return result;
     } catch (error) {
-      console.error('Error en transacción de apuesta:', error);
+      console.error('❌ Error en transacción de apuesta:', error);
       
       // Manejar errores específicos
       if (error instanceof Error) {

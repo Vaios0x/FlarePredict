@@ -21,6 +21,7 @@ import { useFTSOPrices } from './hooks/useFTSOPrices';
 import { useLiveActivity } from './hooks/useLiveActivity';
 import { useNotifications } from './hooks/useNotifications';
 import { FTSO_FEEDS } from './config/contracts';
+import { TransactionTest } from './components/TransactionTest';
 
 function FlarePredictApp() {
   const [currentSection, setCurrentSection] = useState<'home' | 'predict' | 'leaderboard' | 'documentation' | 'create-market'>('home');
@@ -731,6 +732,9 @@ function FlarePredictApp() {
 
             {/* Contract Information */}
             <ContractInfo />
+
+            {/* Transaction Test */}
+            <TransactionTest />
 
             {/* Live Activity Feed */}
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 sm:p-6 border border-white/20">

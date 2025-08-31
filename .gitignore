@@ -46,7 +46,7 @@ coverage/
 # Hardhat
 cache/
 artifacts/
-typechain-types/
+# typechain-types/ - Comentado para permitir deploy
 
 # Temporary files
 *.tmp

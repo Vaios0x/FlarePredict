@@ -21,10 +21,10 @@ export function useLiveActivity() {
   const publicClient = usePublicClient();
   const { address } = useAccount();
   
-  // Obtener la dirección del contrato
+  // Get contract address
   const contractAddress = getContractAddress('FlarePredict');
 
-  // Cargar actividad manual desde localStorage
+  // Load manual activity from localStorage
   const loadManualActivities = (): ActivityEvent[] => {
     if (typeof window === 'undefined') return [];
     try {
@@ -33,7 +33,7 @@ export function useLiveActivity() {
         const activities = JSON.parse(stored);
         console.log('Loaded manual activities from localStorage:', activities.length);
         
-        // Filtrar actividades más antiguas de 7 días (más tiempo)
+        // Filter activities older than 7 days (longer time)
         const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
         const filteredActivities = activities.filter((activity: ActivityEvent) => activity.timestamp > oneWeekAgo);
         
@@ -46,7 +46,7 @@ export function useLiveActivity() {
     return [];
   };
 
-  // Guardar actividad manual en localStorage
+  // Save manual activity to localStorage
   const saveManualActivities = (activities: ActivityEvent[]) => {
     if (typeof window === 'undefined') return;
     try {
@@ -58,12 +58,12 @@ export function useLiveActivity() {
 
   const addActivity = (activity: ActivityEvent) => {
     setActivities(prev => {
-      const newActivities = [activity, ...prev.slice(0, 19)]; // Mantener solo los últimos 20
+      const newActivities = [activity, ...prev.slice(0, 19)]; // Keep only the last 20
       
-      // Si es una actividad manual, guardarla en localStorage
+      // If it's a manual activity, save it to localStorage
       if (activity.id.startsWith('manual-')) {
         const manualActivities = loadManualActivities();
-        const updatedManualActivities = [activity, ...manualActivities].slice(0, 50); // Mantener últimos 50
+        const updatedManualActivities = [activity, ...manualActivities].slice(0, 50); // Keep last 50
         saveManualActivities(updatedManualActivities);
         console.log('Saved manual activity to localStorage:', activity);
       }
@@ -82,13 +82,13 @@ export function useLiveActivity() {
      try {
        console.log('Loading recent activity from contract:', contractAddress);
        
-       // Obtener los últimos 100 bloques para buscar eventos (más amplio)
+       // Get the last 100 blocks to search for events (wider range)
        const latestBlock = await publicClient.getBlockNumber();
        const fromBlock = latestBlock - BigInt(100);
        
        console.log('Searching blocks:', { fromBlock: fromBlock.toString(), toBlock: latestBlock.toString() });
 
-       // Eventos de creación de mercado
+       // Market creation events
        const marketCreatedLogs = await publicClient.getLogs({
          address: contractAddress as `0x${string}`,
          event: parseAbiItem('event MarketCreated(uint256 indexed marketId, address indexed creator, bytes21 feedId, uint256 deadline, string title)'),
@@ -96,7 +96,7 @@ export function useLiveActivity() {
          toBlock: latestBlock,
        });
 
-       // Eventos de apuestas
+       // Bet events
        const betPlacedLogs = await publicClient.getLogs({
          address: contractAddress as `0x${string}`,
          event: parseAbiItem('event PositionTaken(uint256 indexed marketId, address indexed user, bool isYes, uint256 amount, uint256 newOdds)'),
@@ -104,7 +104,7 @@ export function useLiveActivity() {
          toBlock: latestBlock,
        });
 
-       console.log('Eventos encontrados:', {
+       console.log('Events found:', {
          marketCreated: marketCreatedLogs.length,
          betPlaced: betPlacedLogs.length,
          fromBlock: fromBlock.toString(),
@@ -112,7 +112,7 @@ export function useLiveActivity() {
          contractAddress
        });
        
-       // Log detallado de cada evento encontrado
+       // Detailed log of each event found
        if (marketCreatedLogs.length > 0) {
          console.log('MarketCreated logs:', marketCreatedLogs);
        }
@@ -122,7 +122,7 @@ export function useLiveActivity() {
 
       const newActivities: ActivityEvent[] = [];
 
-             // Procesar eventos de creación de mercado
+             // Process market creation events
        for (const log of marketCreatedLogs) {
          try {
            const decoded = decodeEventLog({
@@ -149,7 +149,7 @@ export function useLiveActivity() {
          }
        }
 
-       // Procesar eventos de apuestas
+       // Process bet events
        for (const log of betPlacedLogs) {
          try {
            const decoded = decodeEventLog({
@@ -177,7 +177,7 @@ export function useLiveActivity() {
          }
        }
 
-      // Combinar con actividad manual guardada
+      // Combine with saved manual activity
       const manualActivities = loadManualActivities();
       console.log('Combining activities:', {
         blockchain: newActivities.length,
@@ -186,7 +186,7 @@ export function useLiveActivity() {
       
       const allActivities = [...newActivities, ...manualActivities];
       
-      // Ordenar por timestamp (más reciente primero)
+      // Sort by timestamp (most recent first)
       allActivities.sort((a, b) => b.timestamp - a.timestamp);
       
       console.log('Final activities to display:', allActivities.length);
@@ -197,7 +197,7 @@ export function useLiveActivity() {
         isManual: a.id.startsWith('manual-')
       })));
       
-      setActivities(allActivities.slice(0, 20)); // Mostrar más actividades
+      setActivities(allActivities.slice(0, 20)); // Show more activities
     } catch (error) {
       console.error('Error loading recent activity:', error);
     } finally {
@@ -205,16 +205,16 @@ export function useLiveActivity() {
     }
   };
 
-       // Cargar actividad inicial
+       // Load initial activity
   useEffect(() => {
     if (publicClient) {
       console.log('Initializing live activity...');
-      cleanupOldActivities(); // Limpiar actividades antiguas al cargar
+      cleanupOldActivities(); // Clean old activities when loading
       loadRecentActivity();
     }
   }, [publicClient]);
 
-   // Recargar actividad cada 30 segundos
+   // Reload activity every 30 seconds
    useEffect(() => {
      if (!publicClient) return;
 
@@ -227,7 +227,7 @@ export function useLiveActivity() {
 
 
 
-  // Función para limpiar actividades antiguas
+  // Function to clean old activities
   const cleanupOldActivities = () => {
     if (typeof window === 'undefined') return;
     try {
@@ -250,7 +250,7 @@ export function useLiveActivity() {
     }
   };
 
-  // Función para agregar actividad manualmente después de una transacción exitosa
+  // Function to add activity manually after a successful transaction
   const addManualActivity = (type: 'market_created' | 'bet_placed', data: {
     marketId?: string;
     marketTitle?: string;
@@ -276,7 +276,7 @@ export function useLiveActivity() {
     console.log('Manual activity added successfully');
   };
 
-  // Función para forzar recarga completa
+  // Function to force complete reload
   const forceReload = async () => {
     console.log('Force reloading activities...');
     cleanupOldActivities();

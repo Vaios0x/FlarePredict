@@ -6,8 +6,8 @@ import { Providers } from './providers'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'FlarePredict - Predicciones en Tiempo Real',
-  description: 'Plataforma de predicciones en tiempo real para Flare Network usando oráculos gratuitos',
+  title: 'FlarePredict - Real-Time Predictions',
+  description: 'Real-time prediction platform for Flare Network using free oracles',
 }
 
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es">
+    <html lang="en">
       <body className={inter.className}>
         <Providers>
           {children}

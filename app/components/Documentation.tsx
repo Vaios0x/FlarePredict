@@ -22,95 +22,95 @@ export function Documentation({ onBack }: DocumentationProps) {
   const guides = [
     {
       id: 'getting-started',
-      title: 'Primeros Pasos',
-      description: 'Aprende a configurar tu wallet y hacer tu primera predicción',
+      title: 'Getting Started',
+      description: 'Learn how to set up your wallet and make your first prediction',
       icon: <Zap className="w-6 h-6" />,
-      difficulty: 'Fácil',
+      difficulty: 'Easy',
       time: '5 min',
       sections: [
-        'Conectar tu wallet de Flare',
-        'Explorar mercados disponibles',
-        'Hacer tu primera apuesta',
-        'Entender las probabilidades'
+        'Connect your Flare wallet',
+        'Explore available markets',
+        'Make your first bet',
+        'Understand the odds'
       ]
     },
     {
       id: 'creating-markets',
-      title: 'Crear Mercados',
-      description: 'Guía completa para crear tus propios mercados de predicción',
+      title: 'Creating Markets',
+      description: 'Complete guide to create your own prediction markets',
       icon: <TrendingUp className="w-6 h-6" />,
-      difficulty: 'Intermedio',
+      difficulty: 'Intermediate',
       time: '10 min',
       sections: [
-        'Elegir el tipo de evento',
-        'Configurar el umbral',
-        'Establecer la fecha límite',
-        'Promocionar tu mercado'
+        'Choose the event type',
+        'Configure the threshold',
+        'Set the deadline',
+        'Promote your market'
       ]
     },
     {
       id: 'advanced-strategies',
-      title: 'Estrategias Avanzadas',
-      description: 'Técnicas avanzadas para maximizar tus ganancias',
+      title: 'Advanced Strategies',
+      description: 'Advanced techniques to maximize your earnings',
       icon: <Users className="w-6 h-6" />,
-      difficulty: 'Avanzado',
+      difficulty: 'Advanced',
       time: '15 min',
       sections: [
-        'Análisis de probabilidades',
-        'Diversificación de apuestas',
-        'Timing de mercados',
-        'Gestión de riesgo'
+        'Probability analysis',
+        'Bet diversification',
+        'Market timing',
+        'Risk management'
       ]
     }
   ];
 
   const resources = [
     {
-      title: 'Whitepaper Técnico',
-      description: 'Documentación técnica completa del protocolo',
+      title: 'Technical Whitepaper',
+      description: 'Complete technical documentation of the protocol',
       icon: <FileText className="w-5 h-5" />,
       link: '#',
       type: 'PDF'
     },
     {
-      title: 'Video Tutoriales',
-      description: 'Serie de videos paso a paso',
+      title: 'Video Tutorials',
+      description: 'Step-by-step video series',
       icon: <Video className="w-5 h-5" />,
       link: '#',
       type: 'Video'
     },
     {
       title: 'API Reference',
-      description: 'Documentación de la API para desarrolladores',
+      description: 'API documentation for developers',
       icon: <Code className="w-5 h-5" />,
       link: '#',
       type: 'API'
     },
     {
-      title: 'Seguridad',
-      description: 'Guías de seguridad y mejores prácticas',
+      title: 'Security',
+      description: 'Security guides and best practices',
       icon: <Shield className="w-5 h-5" />,
       link: '#',
-      type: 'Guía'
+      type: 'Guide'
     }
   ];
 
   const faqs = [
     {
-      question: '¿Qué es FlarePredict?',
-      answer: 'FlarePredict es una plataforma descentralizada de mercados de predicción que utiliza oráculos FTSO para liquidación automática y transparente.'
+      question: 'What is FlarePredict?',
+      answer: 'FlarePredict is a decentralized prediction markets platform that uses FTSO oracles for automatic and transparent settlement.'
     },
     {
-      question: '¿Cómo funcionan los oráculos FTSO?',
-      answer: 'Los oráculos FTSO (Flare Time Series Oracle) proporcionan datos verificados en tiempo real que se utilizan para resolver automáticamente los resultados de los mercados.'
+      question: 'How do FTSO oracles work?',
+      answer: 'FTSO (Flare Time Series Oracle) oracles provide verified real-time data that is used to automatically resolve market outcomes.'
     },
     {
-      question: '¿Puedo crear cualquier tipo de mercado?',
-      answer: 'Sí, puedes crear mercados sobre cualquier evento que tenga datos verificables, incluyendo precios de activos, eventos deportivos, clima, y más.'
+      question: 'Can I create any type of market?',
+      answer: 'Yes, you can create markets on any event that has verifiable data, including asset prices, sporting events, weather, and more.'
     },
     {
-      question: '¿Cómo se calculan las ganancias?',
-      answer: 'Las ganancias se calculan automáticamente basándose en las probabilidades del mercado y se distribuyen proporcionalmente entre los ganadores.'
+      question: 'How are earnings calculated?',
+      answer: 'Earnings are automatically calculated based on market probabilities and distributed proportionally among winners.'
     }
   ];
 
@@ -125,9 +125,9 @@ export function Documentation({ onBack }: DocumentationProps) {
         >
           <div className="flex items-center justify-center space-x-3 mb-4">
             <BookOpen className="w-8 h-8 text-purple-400" />
-            <h1 className="text-4xl font-bold text-white">Documentación</h1>
+            <h1 className="text-4xl font-bold text-white">Documentation</h1>
           </div>
-          <p className="text-gray-300 text-lg">Guías, tutoriales y recursos para dominar FlarePredict</p>
+          <p className="text-gray-300 text-lg">Guides, tutorials and resources to master FlarePredict</p>
         </motion.div>
 
         {/* Quick Stats */}
@@ -139,7 +139,7 @@ export function Documentation({ onBack }: DocumentationProps) {
             className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 text-center"
           >
             <div className="text-2xl font-bold text-white">{guides.length}</div>
-            <div className="text-gray-300 text-sm">Guías</div>
+            <div className="text-gray-300 text-sm">Guides</div>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -148,7 +148,7 @@ export function Documentation({ onBack }: DocumentationProps) {
             className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 text-center"
           >
             <div className="text-2xl font-bold text-white">{resources.length}</div>
-            <div className="text-gray-300 text-sm">Recursos</div>
+            <div className="text-gray-300 text-sm">Resources</div>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -157,7 +157,7 @@ export function Documentation({ onBack }: DocumentationProps) {
             className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 text-center"
           >
             <div className="text-2xl font-bold text-white">{faqs.length}</div>
-            <div className="text-gray-300 text-sm">Preguntas Frecuentes</div>
+            <div className="text-gray-300 text-sm">Frequently Asked Questions</div>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -166,7 +166,7 @@ export function Documentation({ onBack }: DocumentationProps) {
             className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 text-center"
           >
             <div className="text-2xl font-bold text-white">24/7</div>
-            <div className="text-gray-300 text-sm">Soporte</div>
+            <div className="text-gray-300 text-sm">Support</div>
           </motion.div>
         </div>
 
@@ -177,7 +177,7 @@ export function Documentation({ onBack }: DocumentationProps) {
           transition={{ delay: 0.5 }}
           className="mb-12"
         >
-          <h2 className="text-2xl font-bold text-white mb-6">Guías de Aprendizaje</h2>
+          <h2 className="text-2xl font-bold text-white mb-6">Learning Guides</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {guides.map((guide, index) => (
               <motion.div
@@ -196,9 +196,9 @@ export function Documentation({ onBack }: DocumentationProps) {
                     <h3 className="text-lg font-semibold text-white">{guide.title}</h3>
                     <div className="flex items-center space-x-2 text-xs">
                       <span className={`px-2 py-1 rounded ${
-                        guide.difficulty === 'Fácil' ? 'bg-green-500/20 text-green-400' :
-                        guide.difficulty === 'Intermedio' ? 'bg-yellow-500/20 text-yellow-400' :
-                        'bg-red-500/20 text-red-400'
+                                              guide.difficulty === 'Easy' ? 'bg-green-500/20 text-green-400' :
+                      guide.difficulty === 'Intermediate' ? 'bg-yellow-500/20 text-yellow-400' :
+                      'bg-red-500/20 text-red-400'
                       }`}>
                         {guide.difficulty}
                       </span>
@@ -216,7 +216,7 @@ export function Documentation({ onBack }: DocumentationProps) {
                   ))}
                 </ul>
                 <button className="w-full mt-4 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-2">
-                  <span>Comenzar</span>
+                  <span>Start</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </motion.div>
@@ -231,7 +231,7 @@ export function Documentation({ onBack }: DocumentationProps) {
           transition={{ delay: 0.7 }}
           className="mb-12"
         >
-          <h2 className="text-2xl font-bold text-white mb-6">Recursos Adicionales</h2>
+          <h2 className="text-2xl font-bold text-white mb-6">Additional Resources</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {resources.map((resource, index) => (
               <motion.div
@@ -271,7 +271,7 @@ export function Documentation({ onBack }: DocumentationProps) {
           transition={{ delay: 0.9 }}
           className="mb-8"
         >
-          <h2 className="text-2xl font-bold text-white mb-6">Preguntas Frecuentes</h2>
+          <h2 className="text-2xl font-bold text-white mb-6">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {faqs.map((faq, index) => (
               <motion.div
@@ -299,7 +299,7 @@ export function Documentation({ onBack }: DocumentationProps) {
             onClick={onBack}
             className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all duration-300"
           >
-            <span>← Volver</span>
+            <span>← Back</span>
           </button>
         </motion.div>
       </div>

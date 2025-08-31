@@ -1,7 +1,7 @@
 {
   "name": "FlarePredict",
   "short_name": "FlarePredict",
-  "description": "Plataforma de predicciones en tiempo real para Flare Network",
+  "description": "Real-time prediction platform for Flare Network",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f0f23",
@@ -22,6 +22,6 @@
     }
   ],
   "categories": ["finance", "utilities"],
-  "lang": "es",
+  "lang": "en",
   "dir": "ltr"
 }

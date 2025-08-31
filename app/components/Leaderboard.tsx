@@ -18,12 +18,12 @@ interface LeaderboardProps {
 }
 
 export function Leaderboard({ onBack }: LeaderboardProps) {
-  // Mock data - en una implementación real esto vendría del contrato
+  // Mock data - in a real implementation this would come from the contract
   const leaderboardData: LeaderboardEntry[] = [
     {
       rank: 1,
       address: '0x1234...5678',
-      username: 'Predicción Maestro',
+      username: 'Prediction Master',
       totalWins: 45,
       totalBets: 52,
       winRate: 86.5,
@@ -41,7 +41,7 @@ export function Leaderboard({ onBack }: LeaderboardProps) {
     {
       rank: 3,
       address: '0x9999...8888',
-      username: 'Flare Fortuna',
+      username: 'Flare Fortune',
       totalWins: 32,
       totalBets: 41,
       winRate: 78.0,
@@ -96,9 +96,9 @@ export function Leaderboard({ onBack }: LeaderboardProps) {
         >
           <div className="flex items-center justify-center space-x-3 mb-4">
             <Trophy className="w-8 h-8 text-yellow-400" />
-            <h1 className="text-4xl font-bold text-white">Tabla de Posiciones</h1>
+            <h1 className="text-4xl font-bold text-white">Leaderboard</h1>
           </div>
-          <p className="text-gray-300 text-lg">Los mejores predictores de FlarePredict</p>
+          <p className="text-gray-300 text-lg">The best predictors on FlarePredict</p>
         </motion.div>
 
         {/* Stats Cards */}
@@ -113,7 +113,7 @@ export function Leaderboard({ onBack }: LeaderboardProps) {
               <Users className="w-8 h-8 text-blue-400" />
               <div>
                 <div className="text-2xl font-bold text-white">1,247</div>
-                <div className="text-gray-300 text-sm">Predictores Activos</div>
+                <div className="text-gray-300 text-sm">Active Predictors</div>
               </div>
             </div>
           </motion.div>
@@ -128,7 +128,7 @@ export function Leaderboard({ onBack }: LeaderboardProps) {
               <TrendingUp className="w-8 h-8 text-green-400" />
               <div>
                 <div className="text-2xl font-bold text-white">5,890</div>
-                <div className="text-gray-300 text-sm">Apuestas Totales</div>
+                <div className="text-gray-300 text-sm">Total Bets</div>
               </div>
             </div>
           </motion.div>
@@ -143,7 +143,7 @@ export function Leaderboard({ onBack }: LeaderboardProps) {
               <Star className="w-8 h-8 text-yellow-400" />
               <div>
                 <div className="text-2xl font-bold text-white">78.5%</div>
-                <div className="text-gray-300 text-sm">Tasa de Acierto Promedio</div>
+                <div className="text-gray-300 text-sm">Average Win Rate</div>
               </div>
             </div>
           </motion.div>
@@ -157,7 +157,7 @@ export function Leaderboard({ onBack }: LeaderboardProps) {
           className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 overflow-hidden"
         >
           <div className="p-6 border-b border-white/10">
-            <h2 className="text-xl font-bold text-white">Top Predictores</h2>
+            <h2 className="text-xl font-bold text-white">Top Predictors</h2>
           </div>
           
           <div className="overflow-x-auto">
@@ -165,19 +165,19 @@ export function Leaderboard({ onBack }: LeaderboardProps) {
               <thead className="bg-white/5">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Posición
+                    Position
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Usuario
+                    User
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Victorias
+                    Wins
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Tasa de Acierto
+                    Win Rate
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Ganancias
+                    Earnings
                   </th>
                 </tr>
               </thead>
@@ -242,7 +242,7 @@ export function Leaderboard({ onBack }: LeaderboardProps) {
             onClick={onBack}
             className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all duration-300"
           >
-            <span>← Volver</span>
+            <span>← Back</span>
           </button>
         </motion.div>
       </div>

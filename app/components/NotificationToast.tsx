@@ -157,7 +157,7 @@ export function NotificationToast({ notification, onClose }: NotificationToastPr
                   <div className="flex items-center justify-between p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20">
                     <div className="flex items-center space-x-2">
                       <DollarSign className="w-4 h-4 text-white/60" />
-                      <span className="text-white/80 text-sm">Apuesta:</span>
+                      <span className="text-white/80 text-sm">Bet:</span>
                     </div>
                     <div className="text-right">
                       <div className="text-white font-semibold">
@@ -177,7 +177,7 @@ export function NotificationToast({ notification, onClose }: NotificationToastPr
                 {/* Market Title */}
                 {notification.details.marketTitle && (
                   <div className="p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20">
-                    <div className="text-white/60 text-xs mb-1">Mercado</div>
+                    <div className="text-white/60 text-xs mb-1">Market</div>
                     <div className="text-white text-sm font-medium truncate">
                       {notification.details.marketTitle}
                     </div>
@@ -187,7 +187,7 @@ export function NotificationToast({ notification, onClose }: NotificationToastPr
                 {/* Transaction Hash */}
                 {notification.details.txHash && (
                   <div className="p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20">
-                    <div className="text-white/60 text-xs mb-1">Transacción</div>
+                    <div className="text-white/60 text-xs mb-1">Transaction</div>
                     <div className="text-white/80 text-xs font-mono break-all">
                       {notification.details.txHash.slice(0, 10)}...{notification.details.txHash.slice(-8)}
                     </div>

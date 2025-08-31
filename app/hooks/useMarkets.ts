@@ -70,7 +70,7 @@ export function useMarkets() {
       // Cargar todos los mercados disponibles
       for (let i = 0; i < Number(marketCount); i++) {
         try {
-          console.log(`📋 Cargando mercado ${i}...`);
+          console.log(`📋 Loading market ${i}...`);
           const marketData = await getMarket(i);
           
           if (marketData) {
@@ -101,7 +101,7 @@ export function useMarkets() {
             console.log(`⚠️ Mercado ${i} retornó datos vacíos`);
           }
         } catch (error) {
-          console.error(`❌ Error cargando mercado ${i}:`, error);
+          console.error(`❌ Error loading market ${i}:`, error);
           // Continuar con el siguiente mercado
         }
       }

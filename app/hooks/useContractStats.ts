@@ -13,22 +13,22 @@ export function useContractStats() {
   const { getTotalVolume, getTotalFeesCollected, isReady } = useFlarePredict();
   const { markets } = useMarkets();
 
-  // Cargar estadísticas del contrato
+  // Load contract statistics
   const loadStats = async () => {
     if (!isReady) return;
 
     try {
       setLoading(true);
       
-      // Obtener volumen total
+      // Get total volume
       const volume = await getTotalVolume();
       setTotalVolume(volume.toString());
       
-      // Obtener comisiones totales
+      // Get total fees
       const fees = await getTotalFeesCollected();
       setTotalFees(fees.toString());
       
-      // Calcular usuarios activos (usuarios únicos que han creado mercados o apostado)
+      // Calculate active users (unique users who have created markets or placed bets)
       const uniqueUsers = new Set<string>();
       markets.forEach(market => {
         if (market.creator) uniqueUsers.add(market.creator);
@@ -42,18 +42,18 @@ export function useContractStats() {
     }
   };
 
-  // Recargar estadísticas cuando cambie la conexión o los mercados
+  // Reload statistics when connection or markets change
   useEffect(() => {
     loadStats();
   }, [isReady, markets.length]);
 
-  // Formatear volumen en FLR
+  // Format volume in FLR
   const formatVolume = (volume: string) => {
     const volumeInFlr = parseFloat(volume) / 1e18;
     return volumeInFlr.toFixed(2);
   };
 
-  // Formatear comisiones en FLR
+  // Format fees in FLR
   const formatFees = (fees: string) => {
     const feesInFlr = parseFloat(fees) / 1e18;
     return feesInFlr.toFixed(4);

@@ -22,31 +22,31 @@ export function QuickLinks({ onNavigate, currentSection, marketsCount, isConnect
   const quickLinks = [
     {
       id: 'markets',
-      label: 'Mercados Activos',
+      label: 'Active Markets',
       icon: <BarChart3 className="w-5 h-5" />,
-      description: `${marketsCount} mercados disponibles`,
+      description: `${marketsCount} markets available`,
       action: () => onNavigate('predict')
     },
     {
       id: 'create',
-      label: 'Crear Mercado',
+      label: 'Create Market',
       icon: <Plus className="w-5 h-5" />,
-      description: 'Crea un nuevo mercado de predicción',
+      description: 'Create a new prediction market',
       action: () => onNavigate('create-market'),
       requiresConnection: true
     },
     {
       id: 'leaderboard',
-      label: 'Tabla de Posiciones',
+      label: 'Leaderboard',
       icon: <Trophy className="w-5 h-5" />,
-      description: 'Ver los mejores predictores',
+      description: 'View the best predictors',
       action: () => onNavigate('leaderboard')
     },
     {
       id: 'docs',
-      label: 'Documentación',
+      label: 'Documentation',
       icon: <FileText className="w-5 h-5" />,
-      description: 'Guías y tutoriales',
+      description: 'Guides and tutorials',
       action: () => onNavigate('documentation')
     }
   ];
@@ -55,8 +55,8 @@ export function QuickLinks({ onNavigate, currentSection, marketsCount, isConnect
     <div className="bg-black/20 backdrop-blur-lg rounded-xl p-4 sm:p-6 border border-white/10">
       <h3 className="text-base sm:text-lg font-bold text-white mb-3 sm:mb-4 flex items-center space-x-2">
         <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
-        <span className="hidden sm:inline">Enlaces Rápidos</span>
-        <span className="sm:hidden">Accesos</span>
+        <span className="hidden sm:inline">Quick Links</span>
+        <span className="sm:hidden">Links</span>
       </h3>
       
       <div className="space-y-2 sm:space-y-3">
@@ -98,7 +98,7 @@ export function QuickLinks({ onNavigate, currentSection, marketsCount, isConnect
                 </div>
                 {isDisabled && (
                   <div className="text-xs text-gray-500 bg-gray-700/50 px-1.5 sm:px-2 py-1 rounded flex-shrink-0">
-                    Conectar
+                    Connect
                   </div>
                 )}
               </div>
@@ -112,13 +112,13 @@ export function QuickLinks({ onNavigate, currentSection, marketsCount, isConnect
         <div className="grid grid-cols-2 gap-2 sm:gap-3 text-xs">
           <div className="bg-white/5 rounded-lg p-2 text-center">
             <div className="text-purple-400 font-medium text-sm">{marketsCount}</div>
-            <div className="text-gray-400 text-xs">Mercados</div>
+            <div className="text-gray-400 text-xs">Markets</div>
           </div>
           <div className="bg-white/5 rounded-lg p-2 text-center">
             <div className="text-green-400 font-medium text-sm">
               {isConnected ? '✅' : '❌'}
             </div>
-            <div className="text-gray-400 text-xs">Estado</div>
+            <div className="text-gray-400 text-xs">Status</div>
           </div>
         </div>
       </div>

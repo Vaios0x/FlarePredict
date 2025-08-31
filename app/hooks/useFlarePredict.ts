@@ -28,23 +28,23 @@ export function useFlarePredict() {
     console.log('🚀 Iniciando creación de mercado...');
     console.log('Estado de conexión:', { isConnected, walletClient: !!walletClient });
     
-    if (!isConnected || !walletClient) throw new Error('Wallet no conectada');
+    if (!isConnected || !walletClient) throw new Error('Wallet not connected');
     
-    // Validar que el deadline esté en el futuro y dentro del rango permitido
+    // Validate that the deadline is in the future and within the allowed range
     const currentTime = Math.floor(Date.now() / 1000);
     if (deadline <= currentTime + 3600) {
-      throw new Error('El deadline debe ser al menos 1 hora en el futuro');
+      throw new Error('Deadline must be at least 1 hour in the future');
     }
     if (deadline > currentTime + 30 * 24 * 3600) {
-      throw new Error('El deadline no puede ser más de 30 días en el futuro');
+      throw new Error('Deadline cannot be more than 30 days in the future');
     }
     
-    // Validar el título
+    // Validate the title
     if (!title || title.length === 0 || title.length > 100) {
-      throw new Error('El título debe tener entre 1 y 100 caracteres');
+      throw new Error('Title must be between 1 and 100 characters');
     }
     
-    console.log('📋 Datos del mercado a crear:', {
+    console.log('📋 Market data to create:', {
       title,
       description,
       feedId,
@@ -56,7 +56,7 @@ export function useFlarePredict() {
     });
     
     try {
-      console.log('📝 Ejecutando transacción createMarket...');
+      console.log('📝 Executing createMarket transaction...');
       const result = await writeContractAsync({
         address: contractAddress as `0x${string}`,
         abi: FlarePredict__factory.abi,
@@ -71,28 +71,28 @@ export function useFlarePredict() {
         ],
       });
       
-      console.log('✅ Mercado creado exitosamente:', result);
+      console.log('✅ Market created successfully:', result);
       return result;
     } catch (error) {
-      console.error('❌ Error creando mercado:', error);
+      console.error('❌ Error creating market:', error);
       
-      // Manejar errores específicos
+      // Handle specific errors
       if (error instanceof Error) {
         const errorMessage = error.message.toLowerCase();
         
         if (errorMessage.includes('insufficient funds')) {
-          throw new Error('Saldo insuficiente para crear el mercado');
+          throw new Error('Insufficient balance to create the market');
         } else if (errorMessage.includes('user rejected')) {
-          throw new Error('Transacción cancelada por el usuario');
+          throw new Error('Transaction cancelled by user');
         } else if (errorMessage.includes('execution reverted')) {
           if (errorMessage.includes('deadline too soon')) {
-            throw new Error('El deadline debe ser al menos 1 hora en el futuro');
+            throw new Error('Deadline must be at least 1 hour in the future');
           } else if (errorMessage.includes('deadline too far')) {
-            throw new Error('El deadline no puede ser más de 30 días en el futuro');
+            throw new Error('Deadline cannot be more than 30 days in the future');
           } else if (errorMessage.includes('invalid title')) {
-            throw new Error('Título inválido (debe tener entre 1 y 100 caracteres)');
+            throw new Error('Invalid title (must be between 1 and 100 characters)');
           } else {
-            throw new Error(`Error en el contrato: ${error.message}`);
+            throw new Error(`Contract error: ${error.message}`);
           }
         }
       }
@@ -102,25 +102,25 @@ export function useFlarePredict() {
   };
 
   const placeBet = async (marketId: number, isYes: boolean, amount: string) => {
-    console.log('💰 Iniciando colocación de apuesta...');
-    console.log('Estado de conexión:', { isConnected, walletClient: !!walletClient });
+    console.log('💰 Starting bet placement...');
+    console.log('Connection status:', { isConnected, walletClient: !!walletClient });
     
-    if (!isConnected || !walletClient) throw new Error('Wallet no conectada');
+    if (!isConnected || !walletClient) throw new Error('Wallet not connected');
     
-    // Validar que el wallet esté conectado y listo
+    // Validate that the wallet is connected and ready
     if (!walletClient.account) {
-      throw new Error('Cuenta de wallet no disponible');
+      throw new Error('Wallet account not available');
     }
     
-    // Validar que el monto sea válido
+    // Validate that the amount is valid
     const amountBigInt = BigInt(amount);
     if (amountBigInt <= BigInt(0)) {
-      throw new Error('Monto de apuesta debe ser mayor a 0');
+      throw new Error('Bet amount must be greater than 0');
     }
     
     // Ejecutar la transacción real para todos los mercados - el contrato validará todo
     try {
-      console.log('📝 Ejecutando transacción de apuesta con:', {
+      console.log('📝 Executing bet transaction with:', {
         marketId,
         isYes,
         amount: amountBigInt.toString(),
@@ -136,30 +136,30 @@ export function useFlarePredict() {
         value: amountBigInt,
       });
       
-      console.log('✅ Transacción de apuesta ejecutada exitosamente:', result);
+      console.log('✅ Bet transaction executed successfully:', result);
       return result;
     } catch (error) {
-      console.error('❌ Error en transacción de apuesta:', error);
+      console.error('❌ Error in bet transaction:', error);
       
-      // Manejar errores específicos
+      // Handle specific errors
       if (error instanceof Error) {
         const errorMessage = error.message.toLowerCase();
         
         if (errorMessage.includes('insufficient funds')) {
-          throw new Error('Saldo insuficiente para realizar esta apuesta');
+          throw new Error('Insufficient balance to place this bet');
         } else if (errorMessage.includes('user rejected')) {
-          throw new Error('Transacción cancelada por el usuario');
+          throw new Error('Transaction cancelled by user');
         } else if (errorMessage.includes('execution reverted')) {
           if (errorMessage.includes('market not open')) {
-            throw new Error('Mercado no está abierto para apuestas');
+            throw new Error('Market is not open for betting');
           } else if (errorMessage.includes('market expired')) {
-            throw new Error('Mercado ha expirado');
+            throw new Error('Market has expired');
           } else if (errorMessage.includes('invalid bet amount')) {
-            throw new Error('Monto de apuesta inválido (debe estar entre 0.1 y 1000 FLR)');
+            throw new Error('Invalid bet amount (must be between 0.1 and 1000 FLR)');
           } else if (errorMessage.includes('position already exists')) {
-            throw new Error('Ya tienes una posición en este mercado');
+            throw new Error('You already have a position in this market');
           } else {
-            throw new Error(`Error en el contrato: ${error.message}`);
+            throw new Error(`Contract error: ${error.message}`);
           }
         }
       }
@@ -169,7 +169,7 @@ export function useFlarePredict() {
   };
 
   const resolveMarket = async (marketId: number, finalValue: string) => {
-    if (!isConnected || !walletClient) throw new Error('Wallet no conectada');
+    if (!isConnected || !walletClient) throw new Error('Wallet not connected');
     
     return await writeContractAsync({
       address: contractAddress as `0x${string}`,
@@ -180,7 +180,7 @@ export function useFlarePredict() {
   };
 
   const claimWinnings = async (marketId: number) => {
-    if (!isConnected || !walletClient) throw new Error('Wallet no conectada');
+    if (!isConnected || !walletClient) throw new Error('Wallet not connected');
     
     return await writeContractAsync({
       address: contractAddress as `0x${string}`,
@@ -192,9 +192,9 @@ export function useFlarePredict() {
 
   // Funciones de lectura usando useReadContract
   const getMarket = async (marketId: number) => {
-    console.log(`🔍 getMarket llamado para marketId: ${marketId}`);
+    console.log(`🔍 getMarket called for marketId: ${marketId}`);
     
-    if (!publicClient) throw new Error('Cliente público no disponible');
+    if (!publicClient) throw new Error('Public client not available');
     
     try {
       const result = await publicClient.readContract({
@@ -203,20 +203,20 @@ export function useFlarePredict() {
         functionName: 'markets',
         args: [BigInt(marketId)],
       });
-      console.log(`✅ getMarket resultado para ${marketId}:`, result);
+      console.log(`✅ getMarket result for ${marketId}:`, result);
       return result;
     } catch (error) {
-      console.error(`❌ Error en getMarket para ${marketId}:`, error);
+      console.error(`❌ Error in getMarket for ${marketId}:`, error);
       throw error;
     }
   };
 
   const getMarketCounter = async () => {
-    console.log('🔍 getMarketCounter llamado');
-    console.log('publicClient disponible:', !!publicClient);
+    console.log('🔍 getMarketCounter called');
+    console.log('publicClient available:', !!publicClient);
     console.log('contractAddress:', contractAddress);
     
-    if (!publicClient) throw new Error('Cliente público no disponible');
+    if (!publicClient) throw new Error('Public client not available');
     
     try {
       const result = await publicClient.readContract({
@@ -224,16 +224,16 @@ export function useFlarePredict() {
         abi: FlarePredict__factory.abi,
         functionName: 'marketCounter',
       });
-      console.log('✅ getMarketCounter resultado:', result);
+      console.log('✅ getMarketCounter result:', result);
       return result;
     } catch (error) {
-      console.error('❌ Error en getMarketCounter:', error);
+      console.error('❌ Error in getMarketCounter:', error);
       throw error;
     }
   };
 
   const calculateOdds = async (marketId: number, isYes: boolean) => {
-    if (!publicClient) throw new Error('Cliente público no disponible');
+    if (!publicClient) throw new Error('Public client not available');
     
     return await publicClient.readContract({
       address: contractAddress as `0x${string}`,
@@ -244,7 +244,7 @@ export function useFlarePredict() {
   };
 
   const getPosition = async (marketId: number, userAddress: string) => {
-    if (!publicClient) throw new Error('Cliente público no disponible');
+    if (!publicClient) throw new Error('Public client not available');
     
     return await publicClient.readContract({
       address: contractAddress as `0x${string}`,
@@ -255,7 +255,7 @@ export function useFlarePredict() {
   };
 
   const getTotalVolume = async () => {
-    if (!publicClient) throw new Error('Cliente público no disponible');
+    if (!publicClient) throw new Error('Public client not available');
     
     return await publicClient.readContract({
       address: contractAddress as `0x${string}`,
@@ -265,7 +265,7 @@ export function useFlarePredict() {
   };
 
   const getTotalFeesCollected = async () => {
-    if (!publicClient) throw new Error('Cliente público no disponible');
+    if (!publicClient) throw new Error('Public client not available');
     
     return await publicClient.readContract({
       address: contractAddress as `0x${string}`,
@@ -276,7 +276,7 @@ export function useFlarePredict() {
 
   const isReadyState = !!publicClient && isConnected;
   
-  console.log('🔍 Estado de useFlarePredict:', {
+  console.log('🔍 useFlarePredict state:', {
     publicClient: !!publicClient,
     walletClient: !!walletClient,
     isConnected,
@@ -288,7 +288,7 @@ export function useFlarePredict() {
   
   return {
     contractAddress,
-    // Funciones
+    // Functions
     createMarket,
     placeBet,
     resolveMarket,
@@ -299,7 +299,7 @@ export function useFlarePredict() {
     getPosition,
     getTotalVolume,
     getTotalFeesCollected,
-    // Estado
+    // State
     isReady: isReadyState,
     isConnected,
     isPending,

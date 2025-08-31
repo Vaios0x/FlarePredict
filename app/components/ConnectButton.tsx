@@ -19,23 +19,23 @@ export function ConnectButton({ onConnect }: ConnectButtonProps = {}) {
   const [isAddingNetwork, setIsAddingNetwork] = useState(false);
   const [lastError, setLastError] = useState<string | null>(null);
 
-  // Limpiar errores cuando cambie el estado y redirigir si es necesario
+  // Clear errors when state changes and redirect if necessary
   useEffect(() => {
     if (isConnected) {
       setLastError(null);
-      // Llamar a la función de redirección si está disponible
+      // Call the redirect function if available
       if (onConnect) {
         onConnect();
       }
     }
   }, [isConnected, onConnect]);
 
-  // Función para agregar Coston2 a MetaMask
+  // Function to add Coston2 to MetaMask
   const addCoston2Network = async () => {
-    console.log('Iniciando proceso de agregar red Coston2...');
+    console.log('Starting process to add Coston2 network...');
     
     if (typeof window !== 'undefined' && window.ethereum) {
-      console.log('MetaMask detectado, procediendo...');
+      console.log('MetaMask detected, proceeding...');
       setIsAddingNetwork(true);
       try {
         // Primero intentar cambiar a Coston2 si ya está agregada
@@ -44,18 +44,18 @@ export function ConnectButton({ onConnect }: ConnectButtonProps = {}) {
             method: 'wallet_switchEthereumChain',
             params: [{ chainId: '0x72' }],
           });
-          console.log('Cambiado a red Coston2');
+          console.log('Switched to Coston2 network');
           setLastError(null);
           return;
         } catch (switchError: any) {
           if (switchError.code === 4902) {
-            console.log('Coston2 no está agregada, procediendo a agregarla...');
+            console.log('Coston2 is not added, proceeding to add it...');
           } else {
-            console.log('Error al cambiar a Coston2:', switchError);
+            console.log('Error switching to Coston2:', switchError);
           }
         }
 
-        // Si no está agregada, agregarla
+        // If not added, add it
         const result = await window.ethereum.request({
           method: 'wallet_addEthereumChain',
           params: [{
@@ -72,34 +72,34 @@ export function ConnectButton({ onConnect }: ConnectButtonProps = {}) {
           }],
         });
         
-        console.log('Coston2 agregada exitosamente a MetaMask:', result);
+        console.log('Coston2 successfully added to MetaMask:', result);
         setLastError(null);
         
-        // Cambiar a la red Coston2 después de agregarla
+        // Switch to Coston2 network after adding it
         try {
           await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
             params: [{ chainId: '0x72' }],
           });
-          console.log('Cambiado a red Coston2');
+          console.log('Switched to Coston2 network');
         } catch (switchError: any) {
-          console.log('Error al cambiar automáticamente a Coston2:', switchError);
+          console.log('Error automatically switching to Coston2:', switchError);
         }
       } catch (error: any) {
-        console.error('Error agregando Coston2:', error);
+        console.error('Error adding Coston2:', error);
         if (error.code === 4001) {
-          setLastError('Usuario canceló la operación');
+          setLastError('User cancelled the operation');
         } else if (error.code === -32602) {
-          setLastError('La red Coston2 ya está agregada a MetaMask');
+          setLastError('Coston2 network is already added to MetaMask');
         } else {
-          setLastError(`Error al agregar Coston2: ${error.message || 'Error desconocido'}`);
+          setLastError(`Error adding Coston2: ${error.message || 'Unknown error'}`);
         }
       } finally {
         setIsAddingNetwork(false);
       }
     } else {
-      console.log('MetaMask no está disponible');
-      setLastError('MetaMask no está disponible. Por favor instala MetaMask.');
+      console.log('MetaMask is not available');
+      setLastError('MetaMask is not available. Please install MetaMask.');
     }
   };
 
@@ -113,12 +113,12 @@ export function ConnectButton({ onConnect }: ConnectButtonProps = {}) {
       >
         <motion.button
           disabled
-          className="group relative overflow-hidden px-6 py-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 text-blue-400 rounded-xl transition-all duration-300 backdrop-blur-sm"
-          aria-label="Conectando wallet"
+                  className="group relative overflow-hidden px-6 py-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 text-blue-400 rounded-xl transition-all duration-300 backdrop-blur-sm"
+        aria-label="Connecting wallet"
         >
           <div className="flex items-center justify-center space-x-2">
             <RefreshCw className="w-5 h-5 animate-spin" />
-            <span className="text-sm font-medium">Conectando...</span>
+            <span className="text-sm font-medium">Connecting...</span>
           </div>
         </motion.button>
       </motion.div>
@@ -164,11 +164,11 @@ export function ConnectButton({ onConnect }: ConnectButtonProps = {}) {
                         whileTap={{ scale: 0.98 }}
                         onClick={openConnectModal}
                         className="group relative overflow-hidden px-6 py-3 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-purple-400 rounded-xl hover:from-purple-500/30 hover:to-pink-500/30 hover:border-purple-400/50 transition-all duration-300 backdrop-blur-sm"
-                        aria-label="Conectar wallet"
+                        aria-label="Connect wallet"
                       >
                         <div className="flex items-center justify-center space-x-2">
                           <Wallet className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-                          <span className="text-sm font-medium">Conectar Wallet</span>
+                          <span className="text-sm font-medium">Connect Wallet</span>
                         </div>
                         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </motion.button>
@@ -182,11 +182,11 @@ export function ConnectButton({ onConnect }: ConnectButtonProps = {}) {
                         whileTap={{ scale: 0.98 }}
                         onClick={openChainModal}
                         className="group relative overflow-hidden px-6 py-3 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-500/30 text-red-400 rounded-xl hover:from-red-500/30 hover:to-orange-500/30 hover:border-red-400/50 transition-all duration-300 backdrop-blur-sm"
-                        aria-label="Red no soportada"
+                        aria-label="Unsupported network"
                       >
                         <div className="flex items-center justify-center space-x-2">
                           <AlertCircle className="w-5 h-5" />
-                          <span className="text-sm font-medium">Red no soportada</span>
+                          <span className="text-sm font-medium">Unsupported network</span>
                         </div>
                       </motion.button>
                     );
@@ -258,11 +258,11 @@ export function ConnectButton({ onConnect }: ConnectButtonProps = {}) {
                             whileTap={{ scale: 0.95 }}
                             onClick={() => disconnect()}
                             className="group relative overflow-hidden px-4 py-2 bg-gradient-to-r from-red-500/20 to-pink-500/20 border border-red-500/30 text-red-400 rounded-xl hover:from-red-500/30 hover:to-pink-500/30 hover:border-red-400/50 transition-all duration-300 backdrop-blur-sm"
-                            aria-label="Desconectar wallet"
+                            aria-label="Disconnect wallet"
                           >
                             <div className="flex items-center space-x-2">
                               <LogOut className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform duration-300" />
-                              <span className="text-sm font-medium">Desconectar</span>
+                              <span className="text-sm font-medium">Disconnect</span>
                             </div>
                             <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                           </motion.button>

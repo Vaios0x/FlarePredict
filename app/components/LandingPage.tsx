@@ -24,58 +24,58 @@ export function LandingPage({ onStartPredicting }: LandingPageProps) {
   const features = [
     {
       icon: <TrendingUp className="w-8 h-8" />,
-      title: "Predicciones en Tiempo Real",
-      description: "Apuesta en mercados de predicción con liquidación instantánea usando datos FTSO verificados."
+      title: "Real-Time Predictions",
+      description: "Bet on prediction markets with instant settlement using verified FTSO data."
     },
     {
       icon: <Shield className="w-8 h-8" />,
-      title: "Seguridad Blockchain",
-      description: "Todas las transacciones están protegidas por la seguridad de Flare Network y contratos inteligentes."
+      title: "Blockchain Security",
+      description: "All transactions are protected by Flare Network security and smart contracts."
     },
     {
       icon: <Zap className="w-8 h-8" />,
-      title: "Liquidación Instantánea",
-      description: "Los resultados se resuelven automáticamente usando oráculos FTSO sin intervención manual."
+      title: "Instant Settlement",
+      description: "Results are automatically resolved using FTSO oracles without manual intervention."
     },
     {
       icon: <Users className="w-8 h-8" />,
-      title: "Comunidad Global",
-      description: "Únete a una comunidad global de traders y predictores en la red Flare."
+      title: "Global Community",
+      description: "Join a global community of traders and predictors on the Flare network."
     }
   ];
 
   const benefits = [
-    "Sin intermediarios - Transacciones directas P2P",
-    "Liquidación automática con oráculos FTSO",
-    "Mercados de cualquier tipo de evento",
-    "Interfaz intuitiva y fácil de usar",
-    "Soporte para múltiples activos",
-    "Transparencia total en blockchain"
+    "No intermediaries - Direct P2P transactions",
+    "Automatic settlement with FTSO oracles",
+    "Markets for any type of event",
+    "Intuitive and easy-to-use interface",
+    "Support for multiple assets",
+    "Total transparency on blockchain"
   ];
 
   const howItWorks = [
     {
       step: "1",
-      title: "Conecta tu Wallet",
-      description: "Conecta tu wallet de Flare Network para comenzar a predecir.",
+      title: "Connect your Wallet",
+      description: "Connect your Flare Network wallet to start predicting.",
       icon: <Target className="w-6 h-6" />
     },
     {
       step: "2", 
-      title: "Elige un Mercado",
-      description: "Selecciona entre mercados existentes o crea uno nuevo.",
+      title: "Choose a Market",
+      description: "Select from existing markets or create a new one.",
       icon: <BarChart3 className="w-6 h-6" />
     },
     {
       step: "3",
-      title: "Haz tu Predicción", 
-      description: "Apuesta SÍ o NO en el resultado que crees que ocurrirá.",
+      title: "Make your Prediction", 
+      description: "Bet YES or NO on the outcome you believe will happen.",
       icon: <TrendingUp className="w-6 h-6" />
     },
     {
       step: "4",
-      title: "Recibe tu Recompensa",
-      description: "Si aciertas, recibe automáticamente tu recompensa en FLR.",
+      title: "Receive your Reward",
+      description: "If you're right, automatically receive your reward in FLR.",
       icon: <DollarSign className="w-6 h-6" />
     }
   ];
@@ -100,13 +100,13 @@ export function LandingPage({ onStartPredicting }: LandingPageProps) {
               </motion.div>
               
               <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-                El Futuro de las
-                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"> Predicciones</span>
+                The Future of
+                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"> Predictions</span>
               </h1>
               
               <p className="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
-                La primera plataforma de mercados de predicción descentralizada en Flare Network. 
-                Apuesta en tiempo real con liquidación instantánea usando datos FTSO verificados.
+                The first decentralized prediction markets platform on Flare Network. 
+                Bet in real-time with instant settlement using verified FTSO data.
               </p>
               
               <motion.button
@@ -115,7 +115,7 @@ export function LandingPage({ onStartPredicting }: LandingPageProps) {
                 onClick={onStartPredicting}
                 className="inline-flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-purple-500/25 transition-all duration-300"
               >
-                <span>Comenzar a Predecir</span>
+                <span>Start Predicting</span>
                 <ArrowRight className="w-5 h-5" />
               </motion.button>
             </motion.div>
@@ -157,10 +157,10 @@ export function LandingPage({ onStartPredicting }: LandingPageProps) {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              ¿Por qué <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">FlarePredict</span>?
+              Why <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">FlarePredict</span>?
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              La plataforma más avanzada para mercados de predicción descentralizados
+              The most advanced platform for decentralized prediction markets
             </p>
           </motion.div>
 
@@ -195,10 +195,10 @@ export function LandingPage({ onStartPredicting }: LandingPageProps) {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              ¿Cómo <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Funciona</span>?
+              How does it <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Work</span>?
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              En solo 4 simples pasos puedes comenzar a predecir y ganar
+              In just 4 simple steps you can start predicting and winning
             </p>
           </motion.div>
 
@@ -244,10 +244,10 @@ export function LandingPage({ onStartPredicting }: LandingPageProps) {
               viewport={{ once: true }}
             >
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                Beneficios <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Únicos</span>
+                Unique <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Benefits</span>
               </h2>
               <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-                FlarePredict ofrece ventajas que ninguna otra plataforma de predicción puede igualar
+                FlarePredict offers advantages that no other prediction platform can match
               </p>
               
               <div className="space-y-4">
@@ -277,26 +277,26 @@ export function LandingPage({ onStartPredicting }: LandingPageProps) {
               <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-3xl p-8 border border-purple-500/30">
                 <div className="text-center">
                   <div className="text-6xl mb-4">🚀</div>
-                  <h3 className="text-2xl font-bold text-white mb-4">Próximamente</h3>
+                  <h3 className="text-2xl font-bold text-white mb-4">Coming Soon</h3>
                   <p className="text-gray-300 mb-6">
-                    Mercados de predicción para:
+                    Prediction markets for:
                   </p>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div className="bg-white/10 rounded-lg p-3">
                       <div className="text-2xl mb-2">🌤️</div>
-                      <div className="text-white font-medium">Clima</div>
+                      <div className="text-white font-medium">Weather</div>
                     </div>
                     <div className="bg-white/10 rounded-lg p-3">
                       <div className="text-2xl mb-2">⚽</div>
-                      <div className="text-white font-medium">Deportes</div>
+                      <div className="text-white font-medium">Sports</div>
                     </div>
                     <div className="bg-white/10 rounded-lg p-3">
                       <div className="text-2xl mb-2">🗳️</div>
-                      <div className="text-white font-medium">Política</div>
+                      <div className="text-white font-medium">Politics</div>
                     </div>
                     <div className="bg-white/10 rounded-lg p-3">
                       <div className="text-2xl mb-2">📈</div>
-                      <div className="text-white font-medium">Economía</div>
+                      <div className="text-white font-medium">Economy</div>
                     </div>
                   </div>
                 </div>
@@ -316,10 +316,10 @@ export function LandingPage({ onStartPredicting }: LandingPageProps) {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              ¿Listo para <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Predecir</span>?
+              Ready to <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Predict</span>?
             </h2>
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              Únete a miles de usuarios que ya están ganando con FlarePredict
+              Join thousands of users who are already winning with FlarePredict
             </p>
             
             <motion.button
@@ -328,7 +328,7 @@ export function LandingPage({ onStartPredicting }: LandingPageProps) {
               onClick={onStartPredicting}
               className="inline-flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-purple-500/25 transition-all duration-300"
             >
-              <span>Comenzar Ahora</span>
+                              <span>Start Now</span>
               <ArrowRight className="w-5 h-5" />
             </motion.button>
           </motion.div>

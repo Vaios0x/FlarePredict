@@ -40,7 +40,7 @@ function FlarePredictApp() {
   const { isConnected, address } = useAccount();
   const publicClient = usePublicClient();
   
-  // Hooks para interactuar con el contrato
+  // Hooks for contract interaction
   const { markets, loading: marketsLoading, calculateOdds, formatDeadline, formatFLRAmount, reload: reloadMarkets, addNewMarket } = useMarkets();
   const { createMarket, placeBet, getPosition, getMarketCounter, isReady } = useFlarePredict();
   const { totalVolume, activeUsers, loading: statsLoading } = useContractStats();
@@ -49,17 +49,17 @@ function FlarePredictApp() {
   const { showSuccess, showError, showInfo, NotificationContainer } = useNotifications();
   const [userPosition, setUserPosition] = useState<{ amount: string; isYes: boolean } | null>(null);
 
-  // Datos reales del contrato desplegado
+  // Real deployed contract data
 
   // Handle market creation
   const handleCreateMarket = async () => {
     if (!newMarket.title || !newMarket.threshold || !newMarket.deadline) {
-      showError('Campos Incompletos', 'Por favor completa todos los campos requeridos');
+      showError('Incomplete Fields', 'Please complete all required fields');
       return;
     }
 
     if (!isReady) {
-      showError('Wallet No Conectada', 'Por favor conecta tu wallet para crear mercados');
+      showError('Wallet Not Connected', 'Please connect your wallet to create markets');
       return;
     }
 
@@ -67,8 +67,8 @@ function FlarePredictApp() {
       const deadline = Math.floor(new Date(newMarket.deadline).getTime() / 1000);
       const threshold = (parseFloat(newMarket.threshold) * 100).toString(); // Convertir USD a centavos (1 USD = 100 centavos)
       
-      // Determinar el feedId basado en el título del mercado
-      let feedId: string = FTSO_FEEDS.FLR_USD; // Por defecto FLR/USD
+      // Determine feedId based on market title
+      let feedId: string = FTSO_FEEDS.FLR_USD; // Default FLR/USD
       
       if (newMarket.title.toLowerCase().includes('btc') || newMarket.title.toLowerCase().includes('bitcoin')) {
         feedId = FTSO_FEEDS.BTC_USD;
@@ -78,7 +78,7 @@ function FlarePredictApp() {
         feedId = FTSO_FEEDS.SGB_USD;
       }
       
-      console.log('Creando mercado con datos:', {
+      console.log('Creating market with data:', {
         title: newMarket.title,
         description: newMarket.description,
         threshold,
@@ -95,15 +95,15 @@ function FlarePredictApp() {
         deadline
       );
 
-       console.log('Mercado creado exitosamente:', result);
+       console.log('Market created successfully:', result);
        setIsCreatingMarket(false);
        setNewMarket({ title: '', description: '', threshold: '', deadline: '' });
        
-       // Obtener el ID del mercado recién creado
+       // Get the ID of the newly created market
        const marketCount = await getMarketCounter();
-       const newMarketId = Number(marketCount) - 1; // El último mercado creado
+       const newMarketId = Number(marketCount) - 1; // The last created market
        
-       // Crear objeto del nuevo mercado para agregarlo inmediatamente
+       // Create new market object to add immediately
        const newMarketData: Market = {
          id: newMarketId,
          title: newMarket.title,
@@ -124,24 +124,24 @@ function FlarePredictApp() {
          emergencyResolved: false,
        };
        
-       // Agregar el nuevo mercado inmediatamente a la lista
+       // Add the new market immediately to the list
        addNewMarket(newMarketData);
        
-       // Agregar actividad manual inmediatamente
+       // Add manual activity immediately
        addManualActivity('market_created', {
          marketTitle: newMarket.title,
          user: address,
          txHash: result,
        });
        
-       // Esperar un poco antes de recargar para que la transacción se confirme
+       // Wait a bit before reloading for the transaction to confirm
        setTimeout(() => {
-         loadRecentActivity(); // Recargar actividad en vivo
+         loadRecentActivity(); // Reload live activity
        }, 2000);
        
                showSuccess(
-          '¡Mercado Creado!', 
-          'Tu mercado ha sido creado exitosamente. Revisa la lista en unos segundos.',
+          'Market Created!', 
+          'Your market has been created successfully. Check the list in a few seconds.',
           {
             marketTitle: newMarket.title,
             txHash: result
@@ -150,20 +150,20 @@ function FlarePredictApp() {
       } catch (error) {
         console.error('Error creating market:', error);
         
-        // Mostrar error más específico
-        let errorTitle = 'Error al Crear Mercado';
-        let errorMessage = 'Ocurrió un error inesperado al crear el mercado.';
+        // Show more specific error
+        let errorTitle = 'Error Creating Market';
+        let errorMessage = 'An unexpected error occurred while creating the market.';
         
         if (error instanceof Error) {
           if (error.message.includes('insufficient funds')) {
-            errorTitle = 'Saldo Insuficiente';
-            errorMessage = 'No tienes suficientes fondos para crear el mercado.';
+            errorTitle = 'Insufficient Balance';
+            errorMessage = 'You don\'t have enough funds to create the market.';
           } else if (error.message.includes('user rejected')) {
-            errorTitle = 'Transacción Cancelada';
-            errorMessage = 'La transacción fue cancelada por el usuario.';
+            errorTitle = 'Transaction Cancelled';
+            errorMessage = 'The transaction was cancelled by the user.';
           } else if (error.message.includes('execution reverted')) {
-            errorTitle = 'Error en el Contrato';
-            errorMessage = 'Error en el contrato. Verifica los parámetros ingresados.';
+            errorTitle = 'Contract Error';
+            errorMessage = 'Error in the contract. Verify the entered parameters.';
           } else {
             errorMessage = error.message;
           }
@@ -196,69 +196,69 @@ function FlarePredictApp() {
   // Handle bet placement
   const handlePlaceBet = async () => {
     if (!selectedMarket || !betAmount) {
-      showError('Monto Requerido', 'Por favor ingresa el monto de la apuesta');
+      showError('Amount Required', 'Please enter the bet amount');
       return;
     }
 
     if (!isReady) {
-      showError('Wallet No Conectada', 'Por favor conecta tu wallet para realizar apuestas');
+      showError('Wallet Not Connected', 'Please connect your wallet to place bets');
       return;
     }
 
     if (!isConnected) {
-      showError('Wallet No Conectada', 'Por favor conecta tu wallet para realizar apuestas');
+      showError('Wallet Not Connected', 'Please connect your wallet to place bets');
       return;
     }
 
 
 
-    // Validar monto de apuesta
+    // Validate bet amount
     const betAmountNum = parseFloat(betAmount);
     if (betAmountNum < 0.1) {
-      showError('Monto Muy Bajo', 'El monto mínimo de apuesta es 0.1 C2FLR');
+      showError('Amount Too Low', 'The minimum bet amount is 0.1 C2FLR');
       return;
     }
     if (betAmountNum > 1000) {
-      showError('Monto Muy Alto', 'El monto máximo de apuesta es 1000 C2FLR');
+      showError('Amount Too High', 'The maximum bet amount is 1000 C2FLR');
       return;
     }
 
-    // Verificar balance antes de intentar la apuesta
+    // Check balance before attempting the bet
     if (publicClient && address) {
       try {
         const balance = await publicClient.getBalance({ address: address as `0x${string}` });
         const betAmountWei = BigInt((betAmountNum * 1e18).toString());
         
         if (balance < betAmountWei) {
-          showError('Saldo Insuficiente', `Tu balance es ${(Number(balance) / 1e18).toFixed(4)} C2FLR. Necesitas al menos ${betAmountNum} C2FLR para esta apuesta.`);
+          showError('Insufficient Balance', `Your balance is ${(Number(balance) / 1e18).toFixed(4)} C2FLR. You need at least ${betAmountNum} C2FLR for this bet.`);
           return;
         }
       } catch (error) {
-        console.warn('Error verificando balance:', error);
-        // Continuar con la apuesta si no se puede verificar el balance
+        console.warn('Error checking balance:', error);
+        // Continue with the bet if balance cannot be verified
       }
     }
 
-    // Validar que el mercado esté activo
+    // Validate that the market is active
     if (selectedMarket.status !== 0) { // 0 = OPEN
-      showError('Mercado Cerrado', 'Este mercado no está abierto para apuestas');
+      showError('Market Closed', 'This market is not open for bets');
       return;
     }
 
-    // Validar que no haya expirado
+    // Validate that it hasn't expired
     const now = Math.floor(Date.now() / 1000);
     if (selectedMarket.deadline <= now) {
-      showError('Mercado Expirado', 'Este mercado ha expirado y no acepta más apuestas');
+      showError('Market Expired', 'This market has expired and no longer accepts bets');
       return;
     }
 
     try {
       setIsPlacingBet(true);
-      showInfo('Procesando Transacción', 'Por favor confirma la transacción en tu wallet...');
+      showInfo('Processing Transaction', 'Please confirm the transaction in your wallet...');
       
-      const amount = (parseFloat(betAmount) * 1e18).toString(); // Convertir a wei
+      const amount = (parseFloat(betAmount) * 1e18).toString(); // Convert to wei
       
-      console.log('Colocando apuesta con datos:', {
+      console.log('Placing bet with data:', {
         marketId: selectedMarket.id,
         betSide,
         amount,
@@ -271,10 +271,10 @@ function FlarePredictApp() {
         amount
       );
 
-      console.log('Apuesta colocada exitosamente:', result);
+      console.log('Bet placed successfully:', result);
       setBetAmount('');
       
-      // Agregar actividad manual inmediatamente
+      // Add manual activity immediately
       addManualActivity('bet_placed', {
         marketId: selectedMarket.id.toString(),
         marketTitle: selectedMarket.title,
@@ -284,15 +284,15 @@ function FlarePredictApp() {
         txHash: result,
       });
       
-      // Esperar un poco antes de recargar para que la transacción se confirme
+      // Wait a bit before reloading for the transaction to confirm
       setTimeout(() => {
-        reloadMarkets(); // Recargar mercados
-        loadRecentActivity(); // Recargar actividad en vivo
+        reloadMarkets(); // Reload markets
+        loadRecentActivity(); // Reload live activity
       }, 2000);
       
       showSuccess(
-        '¡Apuesta Colocada!', 
-        `Tu apuesta de ${betAmount} ${getTokenSymbol(chainId)} ha sido procesada exitosamente.`,
+        'Bet Placed!', 
+        `Your bet of ${betAmount} ${getTokenSymbol(chainId)} has been processed successfully.`,
         {
           amount: betAmount,
           currency: getTokenSymbol(chainId),
@@ -304,49 +304,49 @@ function FlarePredictApp() {
     } catch (error) {
       console.error('Error placing bet:', error);
       
-      // Mostrar error más específico
-      let errorTitle = 'Error al Colocar Apuesta';
-      let errorMessage = 'Ocurrió un error inesperado al procesar tu apuesta.';
+      // Show more specific error
+      let errorTitle = 'Error Placing Bet';
+      let errorMessage = 'An unexpected error occurred while processing your bet.';
       
       if (error instanceof Error) {
         const errorMessageLower = error.message.toLowerCase();
         
         if (errorMessageLower.includes('saldo insuficiente')) {
-          errorTitle = 'Saldo Insuficiente';
-          errorMessage = 'No tienes suficientes fondos para realizar esta apuesta. Verifica tu balance de C2FLR.';
+          errorTitle = 'Insufficient Balance';
+          errorMessage = 'You don\'t have enough funds to place this bet. Check your C2FLR balance.';
         } else if (errorMessageLower.includes('transacción cancelada')) {
-          errorTitle = 'Transacción Cancelada';
-          errorMessage = 'La transacción fue cancelada por el usuario.';
+          errorTitle = 'Transaction Cancelled';
+          errorMessage = 'The transaction was cancelled by the user.';
         } else if (errorMessageLower.includes('mercado no está abierto')) {
-          errorTitle = 'Mercado No Abierto';
-          errorMessage = 'El mercado no está abierto para apuestas.';
+          errorTitle = 'Market Not Open';
+          errorMessage = 'The market is not open for bets.';
         } else if (errorMessageLower.includes('mercado ha expirado')) {
-          errorTitle = 'Mercado Expirado';
-          errorMessage = 'El mercado ha expirado y no acepta más apuestas.';
+          errorTitle = 'Market Expired';
+          errorMessage = 'The market has expired and no longer accepts bets.';
         } else if (errorMessageLower.includes('monto de apuesta inválido')) {
-          errorTitle = 'Monto Inválido';
-          errorMessage = 'El monto de apuesta debe estar entre 0.1 y 1000 C2FLR.';
+          errorTitle = 'Invalid Amount';
+          errorMessage = 'The bet amount must be between 0.1 and 1000 C2FLR.';
         } else if (errorMessageLower.includes('ya tienes una posición')) {
-          errorTitle = 'Posición Existente';
-          errorMessage = 'Ya tienes una posición en este mercado. Solo puedes apostar una vez.';
+          errorTitle = 'Existing Position';
+          errorMessage = 'You already have a position in this market. You can only bet once.';
         } else if (errorMessageLower.includes('mercado no encontrado')) {
-          errorTitle = 'Mercado No Encontrado';
-          errorMessage = 'El mercado especificado no existe.';
+          errorTitle = 'Market Not Found';
+          errorMessage = 'The specified market does not exist.';
         } else if (errorMessageLower.includes('mercado cerrado')) {
-          errorTitle = 'Mercado Cerrado';
-          errorMessage = 'El mercado está cerrado para apuestas.';
+          errorTitle = 'Market Closed';
+          errorMessage = 'The market is closed for bets.';
         } else if (errorMessageLower.includes('error de nonce')) {
-          errorTitle = 'Error de Nonce';
-          errorMessage = 'Error de secuencia de transacción. Intenta nuevamente.';
+          errorTitle = 'Nonce Error';
+          errorMessage = 'Transaction sequence error. Try again.';
         } else if (errorMessageLower.includes('error de gas')) {
-          errorTitle = 'Error de Gas';
-          errorMessage = 'La transacción requiere más gas. Intenta con un monto menor.';
+          errorTitle = 'Gas Error';
+          errorMessage = 'The transaction requires more gas. Try with a smaller amount.';
         } else if (errorMessageLower.includes('error de red')) {
-          errorTitle = 'Error de Red';
-          errorMessage = 'Verifica tu conexión a Coston2 testnet.';
+          errorTitle = 'Network Error';
+          errorMessage = 'Check your connection to Coston2 testnet.';
         } else if (errorMessageLower.includes('execution reverted')) {
-          errorTitle = 'Error en el Contrato';
-          errorMessage = 'La transacción fue revertida por el contrato. Verifica los parámetros.';
+          errorTitle = 'Contract Error';
+          errorMessage = 'The transaction was reverted by the contract. Verify the parameters.';
         } else {
           errorMessage = error.message;
         }
@@ -362,7 +362,7 @@ function FlarePredictApp() {
   if (!isClient) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 flex items-center justify-center">
-        <div className="text-white text-xl">Cargando...</div>
+        <div className="text-white text-xl">Loading...</div>
       </div>
     );
   }
@@ -398,7 +398,7 @@ function FlarePredictApp() {
                 </motion.div>
                 <div>
                   <h1 className="text-xl sm:text-2xl font-bold text-white">FlarePredict</h1>
-                  <p className="text-xs sm:text-sm text-gray-300">Predicciones en Tiempo Real</p>
+                  <p className="text-xs sm:text-sm text-gray-300">Real-Time Predictions</p>
                 </div>
               </div>
               <ConnectButton onConnect={() => setCurrentSection('predict')} />
@@ -462,10 +462,10 @@ function FlarePredictApp() {
               >
                 🔮
               </motion.div>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-white">FlarePredict</h1>
-                <p className="text-xs sm:text-sm text-gray-300">Predicciones en Tiempo Real</p>
-              </div>
+                              <div>
+                  <h1 className="text-xl sm:text-2xl font-bold text-white">FlarePredict</h1>
+                  <p className="text-xs sm:text-sm text-gray-300">Real-Time Predictions</p>
+                </div>
             </div>
             <ConnectButton />
           </div>
@@ -486,19 +486,19 @@ function FlarePredictApp() {
               <div className="flex items-center space-x-2">
                 <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />
                 <span className="text-xs sm:text-sm">
-                  <span className="text-gray-400">Mercados:</span> {markets.length}
+                  <span className="text-gray-400">Markets:</span> {markets.length}
                 </span>
               </div>
               <div className="flex items-center space-x-2">
                  <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />
                  <span className="text-xs sm:text-sm">
-                   <span className="text-gray-400">Volumen:</span> {statsLoading ? '...' : totalVolume} {getTokenSymbol(chainId)}
+                   <span className="text-gray-400">Volume:</span> {statsLoading ? '...' : totalVolume} {getTokenSymbol(chainId)}
                  </span>
                </div>
                <div className="flex items-center space-x-2">
                  <Users className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
                  <span className="text-xs sm:text-sm">
-                   <span className="text-gray-400">Usuarios:</span> {statsLoading ? '...' : activeUsers}
+                   <span className="text-gray-400">Users:</span> {statsLoading ? '...' : activeUsers}
                  </span>
                </div>
             </div>
@@ -508,11 +508,11 @@ function FlarePredictApp() {
                  <div>
                    <div className="text-xs text-gray-400">FLR/USDC</div>
                    <div className="text-xs sm:text-sm font-mono">
-                     {isClient ? (pricesLoading ? 'Cargando...' : `$${flrPrice}`) : '$0.00'}
+                     {isClient ? (pricesLoading ? 'Loading...' : `$${flrPrice}`) : '$0.00'}
                    </div>
                    {isConnected && (
                      <div className="text-xs text-gray-400 mt-1 hidden sm:block">
-                       Red: {getChainName(chainId)}
+                       Network: {getChainName(chainId)}
                      </div>
                    )}
                  </div>
@@ -529,22 +529,22 @@ function FlarePredictApp() {
           {/* Markets List */}
           <div className="lg:col-span-2 space-y-4 overflow-hidden">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
-              <h2 className="text-xl sm:text-2xl font-bold text-white">Mercados Activos</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-white">Active Markets</h2>
               <div className="flex items-center space-x-2 sm:space-x-3">
                 <button
                   onClick={reloadMarkets}
                   disabled={marketsLoading}
                   className="px-2 sm:px-3 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-all disabled:opacity-50 text-sm sm:text-base"
-                  aria-label="Recargar mercados"
+                  aria-label="Reload markets"
                 >
-                  {marketsLoading ? 'Cargando...' : '🔄'}
+                  {marketsLoading ? 'Loading...' : '🔄'}
                 </button>
                 <button
                   onClick={() => setIsCreatingMarket(true)}
                   className="px-3 sm:px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all text-sm sm:text-base"
-                  aria-label="Crear nuevo mercado"
+                  aria-label="Create new market"
                 >
-                  + Crear Mercado
+                  + Create Market
                 </button>
               </div>
             </div>
@@ -552,12 +552,12 @@ function FlarePredictApp() {
             <div className="space-y-4">
               {marketsLoading ? (
                 <div className="text-center py-8">
-                  <div className="text-gray-400">Cargando mercados...</div>
+                  <div className="text-gray-400">Loading markets...</div>
                 </div>
               ) : markets.length === 0 ? (
                 <div className="text-center py-8">
-                  <div className="text-gray-400 mb-2">No hay mercados activos</div>
-                  <div className="text-sm text-gray-500">Crea el primer mercado para comenzar</div>
+                  <div className="text-gray-400 mb-2">No active markets</div>
+                  <div className="text-sm text-gray-500">Create the first market to start</div>
                 </div>
               ) : (
                 markets.map((market) => (
@@ -573,7 +573,7 @@ function FlarePredictApp() {
                    }}
                   tabIndex={0}
                   role="button"
-                  aria-label={`Seleccionar mercado: ${market.title}`}
+                  aria-label={`Select market: ${market.title}`}
                   onKeyDown={(e: any) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       setSelectedMarket(market);
@@ -601,7 +601,7 @@ function FlarePredictApp() {
                           </span>
                         </div>
                         <div className="flex items-center space-x-1">
-                          <span className="text-gray-400 flex-shrink-0">Umbral:</span>
+                          <span className="text-gray-400 flex-shrink-0">Threshold:</span>
                           <span className="text-gray-300 truncate">
                             ${(parseFloat(market.threshold) / 100).toLocaleString()}
                           </span>
@@ -611,7 +611,7 @@ function FlarePredictApp() {
                     
                     <div className="lg:ml-4 w-full lg:w-auto">
                       <div className="text-center mb-2">
-                        <div className="text-xs text-gray-400 mb-1">Probabilidades Actuales</div>
+                        <div className="text-xs text-gray-400 mb-1">Current Odds</div>
                         <div className="flex justify-center space-x-1 sm:space-x-2">
                           <div className="px-1 sm:px-2 lg:px-3 py-1 bg-green-500/20 rounded text-green-400 text-xs sm:text-sm">
                             SÍ {calculateOdds(market, 'yes')}%
@@ -639,11 +639,11 @@ function FlarePredictApp() {
                 className="bg-white/10 backdrop-blur-md rounded-xl p-4 sm:p-6 border border-white/20 lg:sticky lg:top-4 overflow-hidden"
               >
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
-                  <h3 className="text-base sm:text-lg font-semibold text-white">Colocar Apuesta</h3>
-                  <button
-                    onClick={() => setSelectedMarket(null)}
-                    className="lg:hidden p-1 text-gray-400 hover:text-white transition-colors"
-                    aria-label="Cerrar panel de apuestas"
+                  <h3 className="text-base sm:text-lg font-semibold text-white">Place Bet</h3>
+                                      <button
+                      onClick={() => setSelectedMarket(null)}
+                      className="lg:hidden p-1 text-gray-400 hover:text-white transition-colors"
+                      aria-label="Close bet panel"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -654,22 +654,22 @@ function FlarePredictApp() {
                 {userPosition && (
                   <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-2 sm:p-3 mb-3 sm:mb-4">
                     <div className="text-yellow-400 text-xs sm:text-sm font-medium mb-1">
-                      Ya tienes una posición en este mercado
+                      You already have a position in this market
                     </div>
                     <div className="text-yellow-300 text-xs">
-                      {userPosition.amount} FLR en {userPosition.isYes ? 'SÍ' : 'NO'}
+                      {userPosition.amount} FLR in {userPosition.isYes ? 'YES' : 'NO'}
                     </div>
                   </div>
                 )}
                  
                 <div className="space-y-3 sm:space-y-4">
                   <div>
-                    <label className="text-xs sm:text-sm text-gray-300">Mercado</label>
+                    <label className="text-xs sm:text-sm text-gray-300">Market</label>
                     <p className="text-white font-medium text-sm sm:text-base break-words">{selectedMarket.title}</p>
                   </div>
                   
                   <div>
-                    <label className="text-xs sm:text-sm text-gray-300">Elegir Lado</label>
+                    <label className="text-xs sm:text-sm text-gray-300">Choose Side</label>
                     <div className="grid grid-cols-2 gap-2 mt-2">
                       <button
                         onClick={() => setBetSide('yes')}
@@ -678,7 +678,7 @@ function FlarePredictApp() {
                             ? 'bg-green-500 text-white shadow-lg'
                             : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                         }`}
-                        aria-label="Apuesta SÍ"
+                        aria-label="Bet YES"
                       >
                         <div className="flex flex-col items-center">
                           <span className="font-bold">SÍ</span>
@@ -692,7 +692,7 @@ function FlarePredictApp() {
                             ? 'bg-red-500 text-white shadow-lg'
                             : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                         }`}
-                        aria-label="Apuesta NO"
+                        aria-label="Bet NO"
                       >
                         <div className="flex flex-col items-center">
                           <span className="font-bold">NO</span>
@@ -703,7 +703,7 @@ function FlarePredictApp() {
                   </div>
                   
                   <div>
-                    <label className="text-xs sm:text-sm text-gray-300">Monto ({getTokenSymbol(chainId)})</label>
+                    <label className="text-xs sm:text-sm text-gray-300">Amount ({getTokenSymbol(chainId)})</label>
                     <div className="relative mt-2">
                       <input
                         type="number"
@@ -714,7 +714,7 @@ function FlarePredictApp() {
                         min="0.1"
                         max="1000"
                         className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-purple-500 focus:outline-none text-sm sm:text-base"
-                        aria-label="Monto de la apuesta en FLR"
+                        aria-label="Bet amount in FLR"
                       />
                       <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs">
                         {getTokenSymbol(chainId)}
@@ -724,7 +724,7 @@ function FlarePredictApp() {
                   
                   <div className="pt-2 space-y-2">
                     <div className="flex justify-between text-xs sm:text-sm">
-                      <span className="text-gray-400">Ganancia Potencial</span>
+                      <span className="text-gray-400">Potential Winnings</span>
                       <span className="text-white font-medium">
                         {betAmount ? (
                           (parseFloat(betAmount) * (100 / calculateOdds(selectedMarket, betSide))).toFixed(2)
@@ -732,13 +732,13 @@ function FlarePredictApp() {
                       </span>
                     </div>
                     <div className="flex justify-between text-xs sm:text-sm">
-                      <span className="text-gray-400">Comisión (2%)</span>
+                      <span className="text-gray-400">Commission (2%)</span>
                       <span className="text-white">
                         {betAmount ? (parseFloat(betAmount) * 0.02).toFixed(4) : '0.00'} {getTokenSymbol(chainId)}
                       </span>
                     </div>
                     <div className="flex justify-between text-xs sm:text-sm">
-                      <span className="text-gray-400">Total a Pagar</span>
+                      <span className="text-gray-400">Total to Pay</span>
                       <span className="text-green-400 font-medium">
                         {betAmount ? parseFloat(betAmount).toFixed(4) : '0.00'} {getTokenSymbol(chainId)}
                       </span>
@@ -749,9 +749,9 @@ function FlarePredictApp() {
                     onClick={handlePlaceBet}
                     disabled={!betAmount || !!userPosition}
                     className="w-full py-3 sm:py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-medium hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
-                    aria-label="Colocar apuesta"
+                    aria-label="Place bet"
                   >
-                    {userPosition ? 'Ya apostaste en este mercado' : 'Colocar Apuesta'}
+                    {userPosition ? 'You already bet on this market' : 'Place Bet'}
                   </button>
                 </div>
               </motion.div>
@@ -773,16 +773,16 @@ function FlarePredictApp() {
                <div className="flex items-center justify-between mb-3 sm:mb-4">
                  <h3 className="text-base sm:text-lg font-semibold text-white flex items-center">
                    <Activity className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                   <span className="hidden sm:inline">Actividad en Vivo</span>
-                   <span className="sm:hidden">Actividad</span>
+                   <span className="hidden sm:inline">Live Activity</span>
+                   <span className="sm:hidden">Activity</span>
                  </h3>
                  <div className="flex gap-1 sm:gap-2">
                    <button
                      onClick={forceReload}
                      disabled={activityLoading}
                      className="text-xs bg-green-500/20 text-green-400 hover:bg-green-500/30 px-1.5 sm:px-2 py-1 rounded transition-colors disabled:opacity-50"
-                     aria-label="Recargar todo el historial"
-                     title="Recargar todo el historial"
+                     aria-label="Reload entire history"
+                     title="Reload entire history"
                    >
                      {activityLoading ? '⏳' : '🔄'}
                    </button>
@@ -790,8 +790,8 @@ function FlarePredictApp() {
                      onClick={loadRecentActivity}
                      disabled={activityLoading}
                      className="text-xs text-gray-400 hover:text-white transition-colors disabled:opacity-50 px-1.5 sm:px-2 py-1 rounded hover:bg-white/10"
-                     aria-label="Actualizar actividad reciente"
-                     title="Actualizar actividad reciente"
+                     aria-label="Update recent activity"
+                     title="Update recent activity"
                    >
                      {activityLoading ? '⏳' : '📡'}
                    </button>
@@ -800,12 +800,12 @@ function FlarePredictApp() {
                <div className="space-y-2 sm:space-y-3">
                  {activityLoading ? (
                    <div className="text-center py-3 sm:py-4">
-                     <div className="text-gray-400 text-xs sm:text-sm">Cargando actividad...</div>
+                     <div className="text-gray-400 text-xs sm:text-sm">Loading activity...</div>
                    </div>
                  ) : activities.length === 0 ? (
                    <div className="text-center py-3 sm:py-4">
-                     <div className="text-gray-400 text-xs sm:text-sm">No hay actividad reciente</div>
-                     <div className="text-gray-500 text-xs mt-1">Las transacciones aparecerán aquí</div>
+                                        <div className="text-gray-400 text-xs sm:text-sm">No recent activity</div>
+                   <div className="text-gray-500 text-xs mt-1">Transactions will appear here</div>
                    </div>
                  ) : (
                    <div className="space-y-2 sm:space-y-3 max-h-48 sm:max-h-64 lg:max-h-80 overflow-y-auto">
@@ -835,10 +835,10 @@ function FlarePredictApp() {
                          <div className="flex-1 min-w-0">
                            <div className="text-xs sm:text-sm text-white">
                              {activity.type === 'market_created' && (
-                               <span>Nuevo mercado creado</span>
+                               <span>New market created</span>
                              )}
                              {activity.type === 'bet_placed' && (
-                               <span>Apuesta colocada</span>
+                               <span>Bet placed</span>
                              )}
                            </div>
                            {activity.marketTitle && (
@@ -846,11 +846,11 @@ function FlarePredictApp() {
                                {activity.marketTitle}
                              </div>
                            )}
-                           {activity.type === 'bet_placed' && activity.amount && activity.side && (
-                             <div className="text-xs text-gray-400 mt-1">
-                               {parseFloat(activity.amount) / 1e18} FLR en {activity.side.toUpperCase()}
-                             </div>
-                           )}
+                                                        {activity.type === 'bet_placed' && activity.amount && activity.side && (
+                               <div className="text-xs text-gray-400 mt-1">
+                                 {parseFloat(activity.amount) / 1e18} FLR in {activity.side.toUpperCase()}
+                               </div>
+                             )}
                            <div className="text-xs text-gray-500 mt-1">
                              {new Date(activity.timestamp).toLocaleTimeString()}
                            </div>
@@ -881,54 +881,54 @@ function FlarePredictApp() {
             onClick={(e: any) => e.stopPropagation()}
             className="bg-gray-900 rounded-2xl p-4 sm:p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto border border-white/20 shadow-2xl"
           >
-            <h2 className="text-xl font-bold text-white mb-4">Crear Nuevo Mercado</h2>
+            <h2 className="text-xl font-bold text-white mb-4">Create New Market</h2>
             
             <div className="space-y-3">
               <div>
-                <label className="text-sm text-gray-300">Título</label>
+                <label className="text-sm text-gray-300">Title</label>
                 <input
                   type="text"
                   value={newMarket.title}
                   onChange={(e: any) => setNewMarket({ ...newMarket, title: e.target.value })}
-                                     placeholder="¿FLR alcanzará $2.50?"
+                                     placeholder="Will FLR reach $2.50?"
                   className="w-full mt-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-purple-500 focus:outline-none"
-                  aria-label="Título del mercado"
+                  aria-label="Market title"
                 />
               </div>
               
               <div>
-                <label className="text-sm text-gray-300">Descripción</label>
+                <label className="text-sm text-gray-300">Description</label>
                 <textarea
                   value={newMarket.description}
                   onChange={(e: any) => setNewMarket({ ...newMarket, description: e.target.value })}
-                                     placeholder="Mercado resuelve SÍ si FLR/USD >= $2.50"
+                                     placeholder="Market resolves YES if FLR/USD >= $2.50"
                   className="w-full mt-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-purple-500 focus:outline-none"
                   rows={2}
-                  aria-label="Descripción del mercado"
+                  aria-label="Market description"
                 />
               </div>
               
               <div>
-                <label className="text-sm text-gray-300">Precio Umbral</label>
+                <label className="text-sm text-gray-300">Threshold Price</label>
                 <input
                   type="number"
                   value={newMarket.threshold}
                   onChange={(e: any) => setNewMarket({ ...newMarket, threshold: e.target.value })}
                                      placeholder="250"
                   className="w-full mt-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-purple-500 focus:outline-none"
-                  aria-label="Precio umbral"
+                  aria-label="Threshold price"
                 />
               </div>
               
               <div>
-                <label className="text-sm text-gray-300">Fecha de Resolución</label>
+                <label className="text-sm text-gray-300">Resolution Date</label>
                 <input
                   type="datetime-local"
                   value={newMarket.deadline}
                   onChange={(e: any) => setNewMarket({ ...newMarket, deadline: e.target.value })}
                   min={new Date(Date.now() + 3600000).toISOString().slice(0, 16)}
                   className="w-full mt-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-purple-500 focus:outline-none"
-                  aria-label="Fecha de resolución"
+                  aria-label="Resolution date"
                 />
               </div>
             </div>
@@ -937,16 +937,16 @@ function FlarePredictApp() {
               <button
                 onClick={() => setIsCreatingMarket(false)}
                 className="flex-1 py-2 bg-gray-700 text-white rounded-lg font-medium hover:bg-gray-600 transition-all"
-                aria-label="Cancelar creación de mercado"
+                aria-label="Cancel market creation"
               >
-                Cancelar
+                Cancel
               </button>
               <button
                 onClick={handleCreateMarket}
                 className="flex-1 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-medium hover:shadow-lg transition-all"
-                aria-label="Crear mercado"
+                aria-label="Create market"
               >
-                Crear Mercado
+                Create Market
               </button>
             </div>
           </motion.div>
@@ -975,12 +975,12 @@ function FlarePredictApp() {
                  </motion.div>
                  <div>
                    <h3 className="text-xl font-bold text-white">FlarePredict</h3>
-                   <p className="text-sm text-gray-400">Predicciones en Tiempo Real</p>
+                   <p className="text-sm text-gray-400">Real-Time Predictions</p>
                  </div>
                </div>
                <p className="text-gray-300 text-sm leading-relaxed mb-6 max-w-md">
-                 La plataforma líder de mercados de predicción en Flare Network. 
-                 Apuesta en tiempo real con liquidación instantánea usando datos de FTSO.
+                 The leading prediction markets platform on Flare Network. 
+                 Bet in real-time with instant settlement using FTSO data.
                </p>
                <div className="flex space-x-4">
                  <motion.a
@@ -988,7 +988,7 @@ function FlarePredictApp() {
                    whileHover={{ scale: 1.1 }}
                    whileTap={{ scale: 0.9 }}
                    className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white hover:shadow-lg transition-all"
-                   aria-label="Síguenos en Twitter"
+                   aria-label="Follow us on Twitter"
                  >
                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                      <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
@@ -999,7 +999,7 @@ function FlarePredictApp() {
                    whileHover={{ scale: 1.1 }}
                    whileTap={{ scale: 0.9 }}
                    className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white hover:shadow-lg transition-all"
-                   aria-label="Únete a nuestro Discord"
+                   aria-label="Join our Discord"
                  >
                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                      <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419-.019 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1568 2.4189Z"/>
@@ -1010,7 +1010,7 @@ function FlarePredictApp() {
                    whileHover={{ scale: 1.1 }}
                    whileTap={{ scale: 0.9 }}
                    className="w-10 h-10 bg-gradient-to-r from-gray-700 to-gray-900 rounded-full flex items-center justify-center text-white hover:shadow-lg transition-all"
-                   aria-label="Visita nuestro GitHub"
+                   aria-label="Visit our GitHub"
                  >
                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
@@ -1021,7 +1021,7 @@ function FlarePredictApp() {
              
              {/* Quick Links */}
              <div>
-               <h4 className="text-white font-semibold mb-4">Enlaces Rápidos</h4>
+               <h4 className="text-white font-semibold mb-4">Quick Links</h4>
                <ul className="space-y-2">
                  <li>
                    <motion.a
@@ -1029,7 +1029,7 @@ function FlarePredictApp() {
                      whileHover={{ x: 5 }}
                      className="text-gray-300 hover:text-white transition-colors text-sm"
                    >
-                     Mercados Activos
+                     Active Markets
                    </motion.a>
                  </li>
                  <li>
@@ -1038,7 +1038,7 @@ function FlarePredictApp() {
                      whileHover={{ x: 5 }}
                      className="text-gray-300 hover:text-white transition-colors text-sm"
                    >
-                     Crear Mercado
+                     Create Market
                    </motion.a>
                  </li>
                  <li>
@@ -1047,7 +1047,7 @@ function FlarePredictApp() {
                      whileHover={{ x: 5 }}
                      className="text-gray-300 hover:text-white transition-colors text-sm"
                    >
-                     Tabla de Posiciones
+                     Leaderboard
                    </motion.a>
                  </li>
                  <li>
@@ -1056,7 +1056,7 @@ function FlarePredictApp() {
                      whileHover={{ x: 5 }}
                      className="text-gray-300 hover:text-white transition-colors text-sm"
                    >
-                     Documentación
+                     Documentation
                    </motion.a>
                  </li>
                </ul>
@@ -1064,7 +1064,7 @@ function FlarePredictApp() {
              
              {/* Resources */}
              <div>
-               <h4 className="text-white font-semibold mb-4">Recursos</h4>
+               <h4 className="text-white font-semibold mb-4">Resources</h4>
                <ul className="space-y-2">
                  <li>
                    <motion.a
@@ -1096,7 +1096,7 @@ function FlarePredictApp() {
                      target="_blank"
                      rel="noopener noreferrer"
                    >
-                     Faucet de Testnet
+                     Testnet Faucet
                    </motion.a>
                  </li>
                  <li>
@@ -1107,7 +1107,7 @@ function FlarePredictApp() {
                      target="_blank"
                      rel="noopener noreferrer"
                    >
-                     Sitio Oficial
+                     Official Site
                    </motion.a>
                  </li>
                </ul>
@@ -1120,7 +1120,7 @@ function FlarePredictApp() {
                <div className="flex flex-col lg:flex-row justify-between items-center mb-6 space-y-4 lg:space-y-0">
                  <div className="flex flex-col items-center lg:items-start space-y-2">
                    <div className="text-gray-400 text-sm text-center lg:text-left">
-                     © 2025 FlarePredict. Todos los derechos reservados.
+                     © 2025 FlarePredict. All rights reserved.
                    </div>
                    <motion.div
                      whileHover={{ scale: 1.05 }}
@@ -1149,21 +1149,21 @@ function FlarePredictApp() {
                      whileHover={{ scale: 1.05, y: -2 }}
                      className="text-gray-400 hover:text-white transition-all duration-300 flex items-center space-x-1"
                    >
-                     <span>Privacidad</span>
+                     <span>Privacy</span>
                    </motion.a>
                    <motion.a
                      href="/terms"
                      whileHover={{ scale: 1.05, y: -2 }}
                      className="text-gray-400 hover:text-white transition-all duration-300 flex items-center space-x-1"
                    >
-                     <span>Términos</span>
+                     <span>Terms</span>
                    </motion.a>
                    <motion.a
                      href="/support"
                      whileHover={{ scale: 1.05, y: -2 }}
                      className="text-gray-400 hover:text-white transition-all duration-300 flex items-center space-x-1"
                    >
-                     <span>Soporte</span>
+                     <span>Support</span>
                    </motion.a>
                  </div>
                </div>
@@ -1190,7 +1190,7 @@ function FlarePredictApp() {
                    whileHover={{ scale: 1.05 }}
                  >
                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse shadow-lg shadow-purple-400/50"></div>
-                   <span className="font-medium">Liquidación Instantánea</span>
+                   <span className="font-medium">Instant Settlement</span>
                  </motion.div>
                </div>
                
@@ -1203,7 +1203,7 @@ function FlarePredictApp() {
                    whileHover={{ scale: 1.1, y: -2 }}
                    whileTap={{ scale: 0.95 }}
                    className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
-                   aria-label="Contactar en Telegram"
+                   aria-label="Contact on Telegram"
                  >
                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
@@ -1216,7 +1216,7 @@ function FlarePredictApp() {
                    whileHover={{ scale: 1.1, y: -2 }}
                    whileTap={{ scale: 0.95 }}
                    className="w-8 h-8 bg-gradient-to-r from-gray-700 to-gray-900 rounded-full flex items-center justify-center text-white hover:shadow-lg hover:shadow-gray-500/25 transition-all duration-300"
-                   aria-label="Visitar GitHub"
+                   aria-label="Visit GitHub"
                  >
                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>

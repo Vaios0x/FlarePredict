@@ -40,7 +40,7 @@ export function Navigation({ currentSection, onSectionChange }: NavigationProps)
             </motion.div>
             <div>
               <h1 className="text-xl font-bold text-white">FlarePredict</h1>
-              <p className="text-xs text-gray-300">Predicciones en Tiempo Real</p>
+              <p className="text-xs text-gray-300">Real-Time Predictions</p>
             </div>
           </motion.div>
 

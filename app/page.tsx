@@ -605,98 +605,118 @@ function FlarePredictApp() {
           </div>
 
           {/* Sidebar - Bet Panel */}
-          <div className="space-y-4">
+          <div className="space-y-4 lg:space-y-6">
             {/* Selected Market Details */}
             {selectedMarket && (
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20"
+                className="bg-white/10 backdrop-blur-md rounded-xl p-4 sm:p-6 border border-white/20 sticky top-4"
               >
-                                 <h3 className="text-lg font-semibold text-white mb-4">Colocar Apuesta</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4">Colocar Apuesta</h3>
                  
-                 {userPosition && (
-                   <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-3 mb-4">
-                     <div className="text-yellow-400 text-sm font-medium mb-1">
-                       Ya tienes una posición en este mercado
-                     </div>
-                     <div className="text-yellow-300 text-xs">
-                       {userPosition.amount} FLR en {userPosition.isYes ? 'SÍ' : 'NO'}
-                     </div>
-                   </div>
-                 )}
+                {userPosition && (
+                  <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-2 sm:p-3 mb-3 sm:mb-4">
+                    <div className="text-yellow-400 text-xs sm:text-sm font-medium mb-1">
+                      Ya tienes una posición en este mercado
+                    </div>
+                    <div className="text-yellow-300 text-xs">
+                      {userPosition.amount} FLR en {userPosition.isYes ? 'SÍ' : 'NO'}
+                    </div>
+                  </div>
+                )}
                  
-                 <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <div>
-                    <label className="text-sm text-gray-300">Mercado</label>
-                    <p className="text-white font-medium">{selectedMarket.title}</p>
+                    <label className="text-xs sm:text-sm text-gray-300">Mercado</label>
+                    <p className="text-white font-medium text-sm sm:text-base break-words">{selectedMarket.title}</p>
                   </div>
                   
                   <div>
-                    <label className="text-sm text-gray-300">Elegir Lado</label>
+                    <label className="text-xs sm:text-sm text-gray-300">Elegir Lado</label>
                     <div className="grid grid-cols-2 gap-2 mt-2">
                       <button
                         onClick={() => setBetSide('yes')}
-                        className={`py-3 rounded-lg font-medium transition-all ${
+                        className={`py-2 sm:py-3 px-2 sm:px-3 rounded-lg font-medium transition-all text-xs sm:text-sm ${
                           betSide === 'yes'
-                            ? 'bg-green-500 text-white'
+                            ? 'bg-green-500 text-white shadow-lg'
                             : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                         }`}
                         aria-label="Apuesta SÍ"
                       >
-                        SÍ {calculateOdds(selectedMarket, 'yes')}%
+                        <div className="flex flex-col items-center">
+                          <span className="font-bold">SÍ</span>
+                          <span className="text-xs opacity-90">{calculateOdds(selectedMarket, 'yes')}%</span>
+                        </div>
                       </button>
                       <button
                         onClick={() => setBetSide('no')}
-                        className={`py-3 rounded-lg font-medium transition-all ${
+                        className={`py-2 sm:py-3 px-2 sm:px-3 rounded-lg font-medium transition-all text-xs sm:text-sm ${
                           betSide === 'no'
-                            ? 'bg-red-500 text-white'
+                            ? 'bg-red-500 text-white shadow-lg'
                             : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                         }`}
                         aria-label="Apuesta NO"
                       >
-                        NO {calculateOdds(selectedMarket, 'no')}%
+                        <div className="flex flex-col items-center">
+                          <span className="font-bold">NO</span>
+                          <span className="text-xs opacity-90">{calculateOdds(selectedMarket, 'no')}%</span>
+                        </div>
                       </button>
                     </div>
                   </div>
                   
-                                     <div>
-                     <label className="text-sm text-gray-300">Monto ({getTokenSymbol(chainId)})</label>
-                    <input
-                      type="number"
-                      value={betAmount}
-                      onChange={(e: any) => setBetAmount(e.target.value)}
-                      placeholder="0.0"
-                      className="w-full mt-2 px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-purple-500 focus:outline-none"
-                      aria-label="Monto de la apuesta en FLR"
-                    />
+                  <div>
+                    <label className="text-xs sm:text-sm text-gray-300">Monto ({getTokenSymbol(chainId)})</label>
+                    <div className="relative mt-2">
+                      <input
+                        type="number"
+                        value={betAmount}
+                        onChange={(e: any) => setBetAmount(e.target.value)}
+                        placeholder="0.0"
+                        step="0.1"
+                        min="0.1"
+                        max="1000"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-purple-500 focus:outline-none text-sm sm:text-base"
+                        aria-label="Monto de la apuesta en FLR"
+                      />
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs">
+                        {getTokenSymbol(chainId)}
+                      </div>
+                    </div>
                   </div>
                   
-                  <div className="pt-2">
-                    <div className="flex justify-between text-sm mb-2">
+                  <div className="pt-2 space-y-2">
+                    <div className="flex justify-between text-xs sm:text-sm">
                       <span className="text-gray-400">Ganancia Potencial</span>
-                                             <span className="text-white font-medium">
-                         {betAmount ? (
-                           (parseFloat(betAmount) * (100 / calculateOdds(selectedMarket, betSide))).toFixed(2)
-                         ) : '0.00'} {getTokenSymbol(chainId)}
-                       </span>
+                      <span className="text-white font-medium">
+                        {betAmount ? (
+                          (parseFloat(betAmount) * (100 / calculateOdds(selectedMarket, betSide))).toFixed(2)
+                        ) : '0.00'} {getTokenSymbol(chainId)}
+                      </span>
                     </div>
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between text-xs sm:text-sm">
                       <span className="text-gray-400">Comisión (2%)</span>
-                                             <span className="text-white">
-                         {betAmount ? (parseFloat(betAmount) * 0.02).toFixed(4) : '0.00'} {getTokenSymbol(chainId)}
-                       </span>
+                      <span className="text-white">
+                        {betAmount ? (parseFloat(betAmount) * 0.02).toFixed(4) : '0.00'} {getTokenSymbol(chainId)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-xs sm:text-sm">
+                      <span className="text-gray-400">Total a Pagar</span>
+                      <span className="text-green-400 font-medium">
+                        {betAmount ? parseFloat(betAmount).toFixed(4) : '0.00'} {getTokenSymbol(chainId)}
+                      </span>
                     </div>
                   </div>
                   
-                                     <button
-                     onClick={handlePlaceBet}
-                     disabled={!betAmount || !!userPosition}
-                     className="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-medium hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                     aria-label="Colocar apuesta"
-                   >
-                     {userPosition ? 'Ya apostaste en este mercado' : 'Colocar Apuesta'}
-                   </button>
+                  <button
+                    onClick={handlePlaceBet}
+                    disabled={!betAmount || !!userPosition}
+                    className="w-full py-3 sm:py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-medium hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                    aria-label="Colocar apuesta"
+                  >
+                    {userPosition ? 'Ya apostaste en este mercado' : 'Colocar Apuesta'}
+                  </button>
                 </div>
               </motion.div>
             )}
@@ -713,70 +733,71 @@ function FlarePredictApp() {
             <ContractInfo />
 
             {/* Live Activity Feed */}
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
-               <div className="flex items-center justify-between mb-4">
-                 <h3 className="text-lg font-semibold text-white flex items-center">
-                   <Activity className="w-5 h-5 mr-2" />
-                   Actividad en Vivo
+            <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 sm:p-6 border border-white/20">
+               <div className="flex items-center justify-between mb-3 sm:mb-4">
+                 <h3 className="text-base sm:text-lg font-semibold text-white flex items-center">
+                   <Activity className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                   <span className="hidden sm:inline">Actividad en Vivo</span>
+                   <span className="sm:hidden">Actividad</span>
                  </h3>
-                 <div className="flex gap-2">
+                 <div className="flex gap-1 sm:gap-2">
                    <button
                      onClick={forceReload}
                      disabled={activityLoading}
-                     className="text-xs bg-green-500/20 text-green-400 hover:bg-green-500/30 px-2 py-1 rounded transition-colors disabled:opacity-50"
+                     className="text-xs bg-green-500/20 text-green-400 hover:bg-green-500/30 px-1.5 sm:px-2 py-1 rounded transition-colors disabled:opacity-50"
                      aria-label="Recargar todo el historial"
                      title="Recargar todo el historial"
                    >
-                     {activityLoading ? 'Cargando...' : '🔄'}
+                     {activityLoading ? '⏳' : '🔄'}
                    </button>
                    <button
                      onClick={loadRecentActivity}
                      disabled={activityLoading}
-                     className="text-xs text-gray-400 hover:text-white transition-colors disabled:opacity-50"
+                     className="text-xs text-gray-400 hover:text-white transition-colors disabled:opacity-50 px-1.5 sm:px-2 py-1 rounded hover:bg-white/10"
                      aria-label="Actualizar actividad reciente"
                      title="Actualizar actividad reciente"
                    >
-                     {activityLoading ? 'Cargando...' : '📡'}
+                     {activityLoading ? '⏳' : '📡'}
                    </button>
                  </div>
                </div>
-               <div className="space-y-3">
+               <div className="space-y-2 sm:space-y-3">
                  {activityLoading ? (
-                   <div className="text-center py-4">
-                     <div className="text-gray-400 text-sm">Cargando actividad...</div>
+                   <div className="text-center py-3 sm:py-4">
+                     <div className="text-gray-400 text-xs sm:text-sm">Cargando actividad...</div>
                    </div>
                  ) : activities.length === 0 ? (
-                   <div className="text-center py-4">
-                     <div className="text-gray-400 text-sm">No hay actividad reciente</div>
+                   <div className="text-center py-3 sm:py-4">
+                     <div className="text-gray-400 text-xs sm:text-sm">No hay actividad reciente</div>
                      <div className="text-gray-500 text-xs mt-1">Las transacciones aparecerán aquí</div>
                    </div>
                  ) : (
-                   <div className="space-y-3 max-h-64 overflow-y-auto">
+                   <div className="space-y-2 sm:space-y-3 max-h-48 sm:max-h-64 overflow-y-auto">
                      {activities.map((activity) => (
                        <motion.div
                          key={activity.id}
                          initial={{ opacity: 0, x: -20 }}
                          animate={{ opacity: 1, x: 0 }}
-                         className="flex items-start space-x-3 p-3 bg-black/20 rounded-lg border border-white/10"
+                         className="flex items-start space-x-2 sm:space-x-3 p-2 sm:p-3 bg-black/20 rounded-lg border border-white/10"
                        >
-                                                   <div className="flex-shrink-0 relative">
-                            {activity.type === 'market_created' && (
-                              <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center">
-                                <span className="text-green-400 text-xs">📊</span>
-                              </div>
-                            )}
-                            {activity.type === 'bet_placed' && (
-                              <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center">
-                                <span className="text-blue-400 text-xs">💰</span>
-                              </div>
-                            )}
-                            {/* Indicador de actividad manual */}
-                            {activity.id.startsWith('manual-') && (
-                              <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full border border-white"></div>
-                            )}
-                          </div>
+                         <div className="flex-shrink-0 relative">
+                           {activity.type === 'market_created' && (
+                             <div className="w-6 h-6 sm:w-8 sm:h-8 bg-green-500/20 rounded-full flex items-center justify-center">
+                               <span className="text-green-400 text-xs">📊</span>
+                             </div>
+                           )}
+                           {activity.type === 'bet_placed' && (
+                             <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-500/20 rounded-full flex items-center justify-center">
+                               <span className="text-blue-400 text-xs">💰</span>
+                             </div>
+                           )}
+                           {/* Indicador de actividad manual */}
+                           {activity.id.startsWith('manual-') && (
+                             <div className="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-yellow-400 rounded-full border border-white"></div>
+                           )}
+                         </div>
                          <div className="flex-1 min-w-0">
-                           <div className="text-sm text-white">
+                           <div className="text-xs sm:text-sm text-white">
                              {activity.type === 'market_created' && (
                                <span>Nuevo mercado creado</span>
                              )}

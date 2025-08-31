@@ -482,7 +482,7 @@ function FlarePredictApp() {
        <div className="bg-black/30 backdrop-blur-md border-b border-white/10 relative z-10">
         <div className="container mx-auto px-4 py-3">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between text-white space-y-3 sm:space-y-0">
-            <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 lg:gap-6">
               <div className="flex items-center space-x-2">
                 <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />
                 <span className="text-xs sm:text-sm">
@@ -523,11 +523,11 @@ function FlarePredictApp() {
       </div>
 
              {/* Main Content */}
-       <div className="container mx-auto px-4 py-8 relative z-0">
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+       <div className="container mx-auto px-4 py-4 sm:py-8 relative z-0">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           
           {/* Markets List */}
-          <div className="xl:col-span-2 space-y-4">
+          <div className="lg:col-span-2 space-y-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
               <h2 className="text-xl sm:text-2xl font-bold text-white">Mercados Activos</h2>
               <div className="flex items-center space-x-2 sm:space-x-3">
@@ -581,13 +581,13 @@ function FlarePredictApp() {
                   }}
                 >
                                      <div className="flex flex-col lg:flex-row items-start justify-between space-y-4 lg:space-y-0">
-                     <div className="flex-1">
+                     <div className="flex-1 min-w-0">
                                                <div className="flex items-center space-x-2 mb-2">
-                          <h3 className="text-lg sm:text-xl font-semibold text-white">{market.title}</h3>
+                          <h3 className="text-lg sm:text-xl font-semibold text-white break-words">{market.title}</h3>
                         </div>
-                       <p className="text-gray-300 text-sm mb-4">{market.description}</p>
+                       <p className="text-gray-300 text-sm mb-4 break-words">{market.description}</p>
                       
-                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
                         <div className="flex items-center space-x-1">
                           <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
                           <span className="text-gray-300">
@@ -636,9 +636,20 @@ function FlarePredictApp() {
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="bg-white/10 backdrop-blur-md rounded-xl p-4 sm:p-6 border border-white/20 sticky top-4"
+                className="bg-white/10 backdrop-blur-md rounded-xl p-4 sm:p-6 border border-white/20 lg:sticky lg:top-4"
               >
-                <h3 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4">Colocar Apuesta</h3>
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <h3 className="text-base sm:text-lg font-semibold text-white">Colocar Apuesta</h3>
+                  <button
+                    onClick={() => setSelectedMarket(null)}
+                    className="lg:hidden p-1 text-gray-400 hover:text-white transition-colors"
+                    aria-label="Cerrar panel de apuestas"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
                  
                 {userPosition && (
                   <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-2 sm:p-3 mb-3 sm:mb-4">
@@ -797,7 +808,7 @@ function FlarePredictApp() {
                      <div className="text-gray-500 text-xs mt-1">Las transacciones aparecerán aquí</div>
                    </div>
                  ) : (
-                   <div className="space-y-2 sm:space-y-3 max-h-48 sm:max-h-64 overflow-y-auto">
+                   <div className="space-y-2 sm:space-y-3 max-h-48 sm:max-h-64 lg:max-h-80 overflow-y-auto">
                      {activities.map((activity) => (
                        <motion.div
                          key={activity.id}
@@ -860,7 +871,7 @@ function FlarePredictApp() {
            initial={{ opacity: 0 }}
            animate={{ opacity: 1 }}
            exit={{ opacity: 0 }}
-           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4"
+           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
            onClick={() => setIsCreatingMarket(false)}
          >
           <motion.div
@@ -868,7 +879,7 @@ function FlarePredictApp() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             onClick={(e: any) => e.stopPropagation()}
-            className="bg-gray-900 rounded-2xl p-4 sm:p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto border border-white/20"
+            className="bg-gray-900 rounded-2xl p-4 sm:p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto border border-white/20 shadow-2xl"
           >
             <h2 className="text-xl font-bold text-white mb-4">Crear Nuevo Mercado</h2>
             

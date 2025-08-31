@@ -41,7 +41,11 @@ export function useMarkets() {
 
   // Cargar mercados desde el contrato
   const loadMarkets = async () => {
+    console.log('🔍 Iniciando carga de mercados...');
+    console.log('Estado isReady:', isReady);
+    
     if (!isReady) {
+      console.log('❌ Hook no está listo, cancelando carga');
       setLoading(false);
       return;
     }
@@ -50,10 +54,12 @@ export function useMarkets() {
       setLoading(true);
       setError(null);
       
+      console.log('📊 Obteniendo contador de mercados...');
       const marketCount = await getMarketCounter();
-      console.log('Total de mercados:', marketCount);
+      console.log('📈 Total de mercados:', marketCount);
 
       if (Number(marketCount) === 0) {
+        console.log('📭 No hay mercados, estableciendo lista vacía');
         setMarkets([]);
         setLoading(false);
         return;
@@ -63,12 +69,15 @@ export function useMarkets() {
       
       // Cargar los últimos 20 mercados para evitar sobrecarga
       const startIndex = Math.max(0, Number(marketCount) - 20);
+      console.log(`🔄 Cargando mercados del ${startIndex} al ${Number(marketCount) - 1}`);
       
       for (let i = startIndex; i < Number(marketCount); i++) {
         try {
+          console.log(`📋 Cargando mercado ${i}...`);
           const marketData = await getMarket(i);
           
           if (marketData) {
+            console.log(`✅ Mercado ${i} cargado:`, marketData);
             const market: Market = {
               id: i,
               title: marketData[0] || '',
@@ -90,9 +99,12 @@ export function useMarkets() {
             };
             
             marketsData.push(market);
+            console.log(`✅ Mercado ${i} agregado a la lista:`, market.title);
+          } else {
+            console.log(`⚠️ Mercado ${i} retornó datos vacíos`);
           }
         } catch (error) {
-          console.warn(`Error cargando mercado ${i}:`, error);
+          console.error(`❌ Error cargando mercado ${i}:`, error);
           // Continuar con el siguiente mercado
         }
       }
@@ -100,12 +112,14 @@ export function useMarkets() {
       // Ordenar por ID descendente (más recientes primero)
       marketsData.sort((a, b) => b.id - a.id);
       
+      console.log(`🎉 Carga completada. ${marketsData.length} mercados cargados:`, marketsData.map(m => `${m.id}: ${m.title}`));
       setMarkets(marketsData);
     } catch (error) {
-      console.error('Error cargando mercados:', error);
+      console.error('❌ Error cargando mercados:', error);
       setError('Error al cargar mercados');
     } finally {
       setLoading(false);
+      console.log('🏁 Estado de carga establecido en false');
     }
   };
 

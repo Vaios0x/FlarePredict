@@ -24,10 +24,13 @@ export function ConnectButton() {
 
   // Función para agregar Coston2 a MetaMask
   const addCoston2Network = async () => {
+    console.log('Iniciando proceso de agregar red Coston2...');
+    
     if (typeof window !== 'undefined' && window.ethereum) {
+      console.log('MetaMask detectado, procediendo...');
       setIsAddingNetwork(true);
       try {
-        await window.ethereum.request({
+        const result = await window.ethereum.request({
           method: 'wallet_addEthereumChain',
           params: [{
             chainId: '0x72', // 114 en hexadecimal
@@ -39,18 +42,40 @@ export function ConnectButton() {
             },
             rpcUrls: ['https://coston2-api.flare.network/ext/C/rpc'],
             blockExplorerUrls: ['https://coston2-explorer.flare.network'],
+            iconUrls: ['https://flare.network/favicon.ico'],
           }],
         });
-        console.log('Coston2 agregada a MetaMask');
+        
+        console.log('Coston2 agregada exitosamente a MetaMask:', result);
         setLastError(null);
-      } catch (error) {
+        
+        // Opcional: cambiar a la red Coston2 después de agregarla
+        try {
+          await window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0x72' }],
+          });
+          console.log('Cambiado a red Coston2');
+        } catch (switchError: any) {
+          if (switchError.code === 4902) {
+            console.log('La red ya está agregada pero no se pudo cambiar automáticamente');
+          }
+        }
+      } catch (error: any) {
         console.error('Error agregando Coston2:', error);
-        setLastError('Error al agregar Coston2 a MetaMask');
+        if (error.code === 4001) {
+          setLastError('Usuario canceló la operación');
+        } else if (error.code === -32602) {
+          setLastError('La red Coston2 ya está agregada a MetaMask');
+        } else {
+          setLastError(`Error al agregar Coston2: ${error.message || 'Error desconocido'}`);
+        }
       } finally {
         setIsAddingNetwork(false);
       }
     } else {
-      setLastError('MetaMask no está disponible');
+      console.log('MetaMask no está disponible');
+      setLastError('MetaMask no está disponible. Por favor instala MetaMask.');
     }
   };
 

@@ -183,24 +183,44 @@ export function useFlarePredict() {
 
   // Funciones de lectura usando useReadContract
   const getMarket = async (marketId: number) => {
+    console.log(`🔍 getMarket llamado para marketId: ${marketId}`);
+    
     if (!publicClient) throw new Error('Cliente público no disponible');
     
-    return await publicClient.readContract({
-      address: contractAddress as `0x${string}`,
-      abi: FlarePredict__factory.abi,
-      functionName: 'markets',
-      args: [BigInt(marketId)],
-    });
+    try {
+      const result = await publicClient.readContract({
+        address: contractAddress as `0x${string}`,
+        abi: FlarePredict__factory.abi,
+        functionName: 'markets',
+        args: [BigInt(marketId)],
+      });
+      console.log(`✅ getMarket resultado para ${marketId}:`, result);
+      return result;
+    } catch (error) {
+      console.error(`❌ Error en getMarket para ${marketId}:`, error);
+      throw error;
+    }
   };
 
   const getMarketCounter = async () => {
+    console.log('🔍 getMarketCounter llamado');
+    console.log('publicClient disponible:', !!publicClient);
+    console.log('contractAddress:', contractAddress);
+    
     if (!publicClient) throw new Error('Cliente público no disponible');
     
-    return await publicClient.readContract({
-      address: contractAddress as `0x${string}`,
-      abi: FlarePredict__factory.abi,
-      functionName: 'marketCounter',
-    });
+    try {
+      const result = await publicClient.readContract({
+        address: contractAddress as `0x${string}`,
+        abi: FlarePredict__factory.abi,
+        functionName: 'marketCounter',
+      });
+      console.log('✅ getMarketCounter resultado:', result);
+      return result;
+    } catch (error) {
+      console.error('❌ Error en getMarketCounter:', error);
+      throw error;
+    }
   };
 
   const calculateOdds = async (marketId: number, isYes: boolean) => {
@@ -245,6 +265,15 @@ export function useFlarePredict() {
     });
   };
 
+  const isReadyState = !!publicClient && !!walletClient && isConnected;
+  
+  console.log('🔍 Estado de useFlarePredict:', {
+    publicClient: !!publicClient,
+    walletClient: !!walletClient,
+    isConnected,
+    isReady: isReadyState
+  });
+  
   return {
     contractAddress,
     // Funciones
@@ -259,7 +288,7 @@ export function useFlarePredict() {
     getTotalVolume,
     getTotalFeesCollected,
     // Estado
-    isReady: !!publicClient && !!walletClient && isConnected,
+    isReady: isReadyState,
     isConnected,
   };
 }

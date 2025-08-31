@@ -1,12 +1,11 @@
 'use client';
 
-import { useReadContract, useWriteContract, usePublicClient, useWalletClient } from 'wagmi';
-import { useChainId } from 'wagmi';
+import { useReadContract, useWriteContract, usePublicClient, useWalletClient, useAccount } from 'wagmi';
 import { getContractAddress } from '../config/contracts';
 import { FlarePredict__factory } from '../../typechain-types';
 
 export function useFlarePredict() {
-  const chainId = useChainId();
+  const { isConnected } = useAccount();
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
 
@@ -25,7 +24,7 @@ export function useFlarePredict() {
     threshold: string,
     deadline: number
   ) => {
-    if (!walletClient) throw new Error('Wallet no conectada');
+    if (!isConnected || !walletClient) throw new Error('Wallet no conectada');
     
     // Validar que el deadline esté en el futuro y dentro del rango permitido
     const currentTime = Math.floor(Date.now() / 1000);
@@ -97,7 +96,7 @@ export function useFlarePredict() {
   };
 
   const placeBet = async (marketId: number, isYes: boolean, amount: string) => {
-    if (!walletClient) throw new Error('Wallet no conectada');
+    if (!isConnected || !walletClient) throw new Error('Wallet no conectada');
     
     // Validar que el wallet esté conectado y listo
     if (!walletClient.account) {
@@ -161,7 +160,7 @@ export function useFlarePredict() {
   };
 
   const resolveMarket = async (marketId: number, finalValue: string) => {
-    if (!walletClient) throw new Error('Wallet no conectada');
+    if (!isConnected || !walletClient) throw new Error('Wallet no conectada');
     
     return await writeContractAsync({
       address: contractAddress as `0x${string}`,
@@ -172,7 +171,7 @@ export function useFlarePredict() {
   };
 
   const claimWinnings = async (marketId: number) => {
-    if (!walletClient) throw new Error('Wallet no conectada');
+    if (!isConnected || !walletClient) throw new Error('Wallet no conectada');
     
     return await writeContractAsync({
       address: contractAddress as `0x${string}`,
@@ -248,7 +247,6 @@ export function useFlarePredict() {
 
   return {
     contractAddress,
-    chainId,
     // Funciones
     createMarket,
     placeBet,
@@ -261,7 +259,7 @@ export function useFlarePredict() {
     getTotalVolume,
     getTotalFeesCollected,
     // Estado
-    isReady: !!publicClient && !!walletClient,
-    isConnected: !!walletClient,
+    isReady: !!publicClient && !!walletClient && isConnected,
+    isConnected,
   };
 }

@@ -1,6 +1,6 @@
 import { http, createConfig } from 'wagmi';
 import { mainnet, sepolia } from 'wagmi/chains';
-import { injected, metaMask, walletConnect } from 'wagmi/connectors';
+import { injected, metaMask, walletConnect, coinbaseWallet, safe } from 'wagmi/connectors';
 import { ENV_CONFIG } from './env';
 
 // Configuración personalizada para Flare Network
@@ -29,8 +29,19 @@ export const config = createConfig({
     injected(),
     metaMask(),
     walletConnect({ 
-      projectId: ENV_CONFIG.WALLETCONNECT_PROJECT_ID
+      projectId: ENV_CONFIG.WALLETCONNECT_PROJECT_ID,
+      metadata: {
+        name: ENV_CONFIG.APP_NAME,
+        description: ENV_CONFIG.APP_DESCRIPTION,
+        url: ENV_CONFIG.APP_URL,
+        icons: ['https://flarepredict.vercel.app/icon.png']
+      }
     }),
+    coinbaseWallet({
+      appName: ENV_CONFIG.APP_NAME,
+      appLogoUrl: 'https://flarepredict.vercel.app/icon.png'
+    }),
+    safe()
   ],
   transports: {
     [flareCoston2.id]: http(),

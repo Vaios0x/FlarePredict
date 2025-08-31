@@ -34,7 +34,7 @@ export interface Position {
 
 export function useMarkets() {
   const [markets, setMarkets] = useState<Market[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { address } = useAccount();
   const { getMarketCounter, getMarket, isReady } = useFlarePredict();
@@ -67,11 +67,8 @@ export function useMarkets() {
 
       const marketsData: Market[] = [];
       
-      // Cargar los últimos 20 mercados para evitar sobrecarga
-      const startIndex = Math.max(0, Number(marketCount) - 20);
-      console.log(`🔄 Cargando mercados del ${startIndex} al ${Number(marketCount) - 1}`);
-      
-      for (let i = startIndex; i < Number(marketCount); i++) {
+      // Cargar todos los mercados disponibles
+      for (let i = 0; i < Number(marketCount); i++) {
         try {
           console.log(`📋 Cargando mercado ${i}...`);
           const marketData = await getMarket(i);
@@ -135,7 +132,12 @@ export function useMarkets() {
 
   // Cargar mercados cuando el hook esté listo
   useEffect(() => {
-    loadMarkets();
+    if (isReady) {
+      console.log('🔄 Hook listo, cargando mercados...');
+      loadMarkets();
+    } else {
+      console.log('⏳ Hook no está listo, esperando...');
+    }
   }, [isReady]);
 
   // Funciones de utilidad

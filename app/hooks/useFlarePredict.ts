@@ -1,19 +1,20 @@
 'use client';
 
-import { useReadContract, useWriteContract, usePublicClient, useWalletClient, useAccount } from 'wagmi';
+import { useReadContract, useWriteContract, usePublicClient, useWalletClient, useAccount, useChainId } from 'wagmi';
 import { getContractAddress } from '../config/contracts';
 import { FlarePredict__factory } from '../../typechain-types';
 
 export function useFlarePredict() {
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
+  const chainId = useChainId();
 
   // Obtener dirección del contrato según la red
   const contractAddress = getContractAddress('FlarePredict');
 
   // Funciones del contrato usando useWriteContract
-  const { writeContractAsync } = useWriteContract();
+  const { writeContractAsync, isPending } = useWriteContract();
 
   // Funciones del contrato
   const createMarket = async (
@@ -273,12 +274,13 @@ export function useFlarePredict() {
     });
   };
 
-  const isReadyState = !!publicClient && !!walletClient && isConnected;
+  const isReadyState = !!publicClient && isConnected;
   
   console.log('🔍 Estado de useFlarePredict:', {
     publicClient: !!publicClient,
     walletClient: !!walletClient,
     isConnected,
+    chainId,
     isReady: isReadyState
   });
   
@@ -298,5 +300,7 @@ export function useFlarePredict() {
     // Estado
     isReady: isReadyState,
     isConnected,
+    isPending,
+    chainId,
   };
 }

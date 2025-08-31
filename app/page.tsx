@@ -425,21 +425,21 @@ function FlarePredictApp() {
       {/* Header */}
       <header className="border-b border-white/10 backdrop-blur-lg bg-black/20 relative z-20">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0">
+            <div className="flex items-center space-x-3 sm:space-x-4">
               <motion.div
                 initial={{ rotate: 0 }}
                 animate={{ rotate: 360 }}
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="text-4xl"
+                className="text-3xl sm:text-4xl"
                 role="img"
                 aria-label="Cristal de predicción girando"
               >
                 🔮
               </motion.div>
               <div>
-                <h1 className="text-2xl font-bold text-white">FlarePredict</h1>
-                <p className="text-sm text-gray-300">Predicciones en Tiempo Real</p>
+                <h1 className="text-xl sm:text-2xl font-bold text-white">FlarePredict</h1>
+                <p className="text-xs sm:text-sm text-gray-300">Predicciones en Tiempo Real</p>
               </div>
             </div>
             <ConnectButton />
@@ -456,37 +456,37 @@ function FlarePredictApp() {
              {/* Stats Bar */}
        <div className="bg-black/30 backdrop-blur-md border-b border-white/10 relative z-10">
         <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between text-white">
-            <div className="flex items-center space-x-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between text-white space-y-3 sm:space-y-0">
+            <div className="flex flex-wrap items-center gap-4 sm:gap-6">
               <div className="flex items-center space-x-2">
-                <Activity className="w-5 h-5 text-green-400" />
-                <span className="text-sm">
+                <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />
+                <span className="text-xs sm:text-sm">
                   <span className="text-gray-400">Mercados:</span> {markets.length}
                 </span>
               </div>
-                                            <div className="flex items-center space-x-2">
-                 <DollarSign className="w-5 h-5 text-yellow-400" />
-                 <span className="text-sm">
+              <div className="flex items-center space-x-2">
+                 <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />
+                 <span className="text-xs sm:text-sm">
                    <span className="text-gray-400">Volumen:</span> {statsLoading ? '...' : totalVolume} {getTokenSymbol(chainId)}
                  </span>
                </div>
                <div className="flex items-center space-x-2">
-                 <Users className="w-5 h-5 text-blue-400" />
-                 <span className="text-sm">
-                   <span className="text-gray-400">Usuarios Activos:</span> {statsLoading ? '...' : activeUsers}
+                 <Users className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
+                 <span className="text-xs sm:text-sm">
+                   <span className="text-gray-400">Usuarios:</span> {statsLoading ? '...' : activeUsers}
                  </span>
                </div>
             </div>
-                         <div className="flex items-center space-x-4">
-               <div className="flex items-center space-x-2 bg-black/20 rounded-lg px-3 py-2 border border-white/10">
-                                   <span className="text-xl">🔥</span>
-                                   <div>
-                    <div className="text-xs text-gray-400">FLR/USDC</div>
-                    <div className="text-sm font-mono">
-                      {isClient ? (pricesLoading ? 'Cargando...' : `$${flrPrice}`) : '$0.00'}
-                    </div>
+            <div className="flex items-center space-x-2 sm:space-x-4">
+               <div className="flex items-center space-x-2 bg-black/20 rounded-lg px-2 sm:px-3 py-2 border border-white/10">
+                 <span className="text-lg sm:text-xl">🔥</span>
+                 <div>
+                   <div className="text-xs text-gray-400">FLR/USDC</div>
+                   <div className="text-xs sm:text-sm font-mono">
+                     {isClient ? (pricesLoading ? 'Cargando...' : `$${flrPrice}`) : '$0.00'}
+                   </div>
                    {isConnected && (
-                     <div className="text-xs text-gray-400 mt-1">
+                     <div className="text-xs text-gray-400 mt-1 hidden sm:block">
                        Red: {getChainName(chainId)}
                      </div>
                    )}
@@ -499,24 +499,24 @@ function FlarePredictApp() {
 
              {/* Main Content */}
        <div className="container mx-auto px-4 py-8 relative z-0">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
           
           {/* Markets List */}
-          <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-white">Mercados Activos</h2>
-              <div className="flex items-center space-x-3">
+          <div className="xl:col-span-2 space-y-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
+              <h2 className="text-xl sm:text-2xl font-bold text-white">Mercados Activos</h2>
+              <div className="flex items-center space-x-2 sm:space-x-3">
                 <button
                   onClick={reloadMarkets}
                   disabled={marketsLoading}
-                  className="px-3 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-all disabled:opacity-50"
+                  className="px-2 sm:px-3 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-all disabled:opacity-50 text-sm sm:text-base"
                   aria-label="Recargar mercados"
                 >
                   {marketsLoading ? 'Cargando...' : '🔄'}
                 </button>
                 <button
                   onClick={() => setIsCreatingMarket(true)}
-                  className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all"
+                  className="px-3 sm:px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all text-sm sm:text-base"
                   aria-label="Crear nuevo mercado"
                 >
                   + Crear Mercado
@@ -555,22 +555,22 @@ function FlarePredictApp() {
                     }
                   }}
                 >
-                                     <div className="flex items-start justify-between">
+                                     <div className="flex flex-col lg:flex-row items-start justify-between space-y-4 lg:space-y-0">
                      <div className="flex-1">
                                                <div className="flex items-center space-x-2 mb-2">
-                          <h3 className="text-xl font-semibold text-white">{market.title}</h3>
+                          <h3 className="text-lg sm:text-xl font-semibold text-white">{market.title}</h3>
                         </div>
                        <p className="text-gray-300 text-sm mb-4">{market.description}</p>
                       
-                      <div className="flex items-center space-x-4 text-sm">
+                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm">
                         <div className="flex items-center space-x-1">
-                          <Clock className="w-4 h-4 text-gray-400" />
+                          <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
                           <span className="text-gray-300">
                             {formatDeadline(market.deadline)}
                           </span>
                         </div>
                         <div className="flex items-center space-x-1">
-                          <DollarSign className="w-4 h-4 text-gray-400" />
+                          <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
                           <span className="text-gray-300">
                             {formatFLRAmount((parseFloat(market.totalYesStake) + parseFloat(market.totalNoStake)).toString())} {getTokenSymbol(chainId)}
                           </span>
@@ -584,14 +584,14 @@ function FlarePredictApp() {
                       </div>
                     </div>
                     
-                    <div className="ml-4">
+                    <div className="lg:ml-4 w-full lg:w-auto">
                       <div className="text-center mb-2">
                         <div className="text-xs text-gray-400 mb-1">Probabilidades Actuales</div>
-                        <div className="flex space-x-2">
-                          <div className="px-3 py-1 bg-green-500/20 rounded text-green-400">
+                        <div className="flex justify-center space-x-2">
+                          <div className="px-2 sm:px-3 py-1 bg-green-500/20 rounded text-green-400 text-xs sm:text-sm">
                             SÍ {calculateOdds(market, 'yes')}%
                           </div>
-                          <div className="px-3 py-1 bg-red-500/20 rounded text-red-400">
+                          <div className="px-2 sm:px-3 py-1 bg-red-500/20 rounded text-red-400 text-xs sm:text-sm">
                             NO {calculateOdds(market, 'no')}%
                           </div>
                         </div>
@@ -822,7 +822,7 @@ function FlarePredictApp() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             onClick={(e: any) => e.stopPropagation()}
-            className="bg-gray-900 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto border border-white/20"
+            className="bg-gray-900 rounded-2xl p-4 sm:p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto border border-white/20"
           >
             <h2 className="text-xl font-bold text-white mb-4">Crear Nuevo Mercado</h2>
             
@@ -902,10 +902,10 @@ function FlarePredictApp() {
        {/* Footer */}
        <footer className="bg-black/40 backdrop-blur-lg border-t border-white/10 mt-16 relative z-10">
          <div className="container mx-auto px-4 py-12">
-           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
              
              {/* Brand Section */}
-             <div className="md:col-span-2">
+             <div className="sm:col-span-2">
                <div className="flex items-center space-x-3 mb-4">
                  <motion.div
                    animate={{ rotate: 360 }}
@@ -1057,63 +1057,63 @@ function FlarePredictApp() {
              </div>
            </div>
            
-           {/* Bottom Section */}
-           <div className="border-t border-white/10 mt-8 pt-8">
-             {/* Copyright and Creator Info */}
-             <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-               <div className="flex flex-col items-center md:items-start space-y-2 mb-4 md:mb-0">
-                 <div className="text-gray-400 text-sm">
-                   © 2025 FlarePredict. Todos los derechos reservados.
-                 </div>
-                 <motion.div
-                   whileHover={{ scale: 1.05 }}
-                   className="flex items-center space-x-2 text-sm"
-                 >
-                   <span className="text-gray-500">Made by</span>
-                   <motion.a
-                     href="https://t.me/Vai0sx"
-                     target="_blank"
-                     rel="noopener noreferrer"
-                     whileHover={{ scale: 1.1 }}
-                     className="text-purple-400 hover:text-purple-300 font-semibold transition-colors duration-300 flex items-center space-x-1"
+                        {/* Bottom Section */}
+             <div className="border-t border-white/10 mt-8 pt-8">
+               {/* Copyright and Creator Info */}
+               <div className="flex flex-col lg:flex-row justify-between items-center mb-6 space-y-4 lg:space-y-0">
+                 <div className="flex flex-col items-center lg:items-start space-y-2">
+                   <div className="text-gray-400 text-sm text-center lg:text-left">
+                     © 2025 FlarePredict. Todos los derechos reservados.
+                   </div>
+                   <motion.div
+                     whileHover={{ scale: 1.05 }}
+                     className="flex items-center space-x-2 text-sm"
                    >
-                     <span>Vai0sx</span>
-                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                       <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-                     </svg>
+                     <span className="text-gray-500">Made by</span>
+                     <motion.a
+                       href="https://t.me/Vai0sx"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       whileHover={{ scale: 1.1 }}
+                       className="text-purple-400 hover:text-purple-300 font-semibold transition-colors duration-300 flex items-center space-x-1"
+                     >
+                       <span>Vai0sx</span>
+                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                         <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                       </svg>
+                     </motion.a>
+                   </motion.div>
+                 </div>
+                 
+                 {/* Quick Links */}
+                 <div className="flex flex-wrap justify-center lg:justify-end space-x-4 lg:space-x-6 text-sm">
+                   <motion.a
+                     href="/privacy"
+                     whileHover={{ scale: 1.05, y: -2 }}
+                     className="text-gray-400 hover:text-white transition-all duration-300 flex items-center space-x-1"
+                   >
+                     <span>Privacidad</span>
                    </motion.a>
-                 </motion.div>
+                   <motion.a
+                     href="/terms"
+                     whileHover={{ scale: 1.05, y: -2 }}
+                     className="text-gray-400 hover:text-white transition-all duration-300 flex items-center space-x-1"
+                   >
+                     <span>Términos</span>
+                   </motion.a>
+                   <motion.a
+                     href="/support"
+                     whileHover={{ scale: 1.05, y: -2 }}
+                     className="text-gray-400 hover:text-white transition-all duration-300 flex items-center space-x-1"
+                   >
+                     <span>Soporte</span>
+                   </motion.a>
+                 </div>
                </div>
-               
-               {/* Quick Links */}
-               <div className="flex space-x-6 text-sm">
-                 <motion.a
-                   href="/privacy"
-                   whileHover={{ scale: 1.05, y: -2 }}
-                   className="text-gray-400 hover:text-white transition-all duration-300 flex items-center space-x-1"
-                 >
-                   <span>Privacidad</span>
-                 </motion.a>
-                 <motion.a
-                   href="/terms"
-                   whileHover={{ scale: 1.05, y: -2 }}
-                   className="text-gray-400 hover:text-white transition-all duration-300 flex items-center space-x-1"
-                 >
-                   <span>Términos</span>
-                 </motion.a>
-                 <motion.a
-                   href="/support"
-                   whileHover={{ scale: 1.05, y: -2 }}
-                   className="text-gray-400 hover:text-white transition-all duration-300 flex items-center space-x-1"
-                 >
-                   <span>Soporte</span>
-                 </motion.a>
-               </div>
-             </div>
              
              {/* Network Status */}
-             <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
-               <div className="flex items-center justify-center md:justify-start space-x-6 text-xs text-gray-400">
+             <div className="flex flex-col lg:flex-row items-center justify-between space-y-4 lg:space-y-0">
+               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 lg:gap-6 text-xs text-gray-400">
                  <motion.div 
                    className="flex items-center space-x-2"
                    whileHover={{ scale: 1.05 }}

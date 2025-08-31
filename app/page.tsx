@@ -445,7 +445,7 @@ function FlarePredictApp() {
   }
 
     return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 overflow-x-hidden">
       
       {/* Header */}
       <header className="border-b border-white/10 backdrop-blur-lg bg-black/20 relative z-20">
@@ -523,11 +523,11 @@ function FlarePredictApp() {
       </div>
 
              {/* Main Content */}
-       <div className="container mx-auto px-4 py-4 sm:py-8 relative z-0">
+       <div className="container mx-auto px-4 py-4 sm:py-8 relative z-0 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           
           {/* Markets List */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2 space-y-4 overflow-hidden">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
               <h2 className="text-xl sm:text-2xl font-bold text-white">Mercados Activos</h2>
               <div className="flex items-center space-x-2 sm:space-x-3">
@@ -566,7 +566,7 @@ function FlarePredictApp() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   whileHover={{ scale: 1.02 }}
-                  className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 cursor-pointer"
+                  className="bg-white/10 backdrop-blur-md rounded-xl p-4 sm:p-6 border border-white/20 cursor-pointer overflow-hidden"
                                      onClick={() => {
                      setSelectedMarket(market);
                      checkUserPosition(market.id);
@@ -587,22 +587,22 @@ function FlarePredictApp() {
                         </div>
                        <p className="text-gray-300 text-sm mb-4 break-words">{market.description}</p>
                       
-                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
+                      <div className="flex flex-wrap items-center gap-1 sm:gap-2 lg:gap-4 text-xs sm:text-sm">
                         <div className="flex items-center space-x-1">
-                          <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
-                          <span className="text-gray-300">
+                          <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" />
+                          <span className="text-gray-300 truncate">
                             {formatDeadline(market.deadline)}
                           </span>
                         </div>
                         <div className="flex items-center space-x-1">
-                          <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
-                          <span className="text-gray-300">
+                          <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" />
+                          <span className="text-gray-300 truncate">
                             {formatFLRAmount((parseFloat(market.totalYesStake) + parseFloat(market.totalNoStake)).toString())} {getTokenSymbol(chainId)}
                           </span>
                         </div>
                         <div className="flex items-center space-x-1">
-                          <span className="text-gray-400">Umbral:</span>
-                          <span className="text-gray-300">
+                          <span className="text-gray-400 flex-shrink-0">Umbral:</span>
+                          <span className="text-gray-300 truncate">
                             ${(parseFloat(market.threshold) / 100).toLocaleString()}
                           </span>
                         </div>
@@ -612,11 +612,11 @@ function FlarePredictApp() {
                     <div className="lg:ml-4 w-full lg:w-auto">
                       <div className="text-center mb-2">
                         <div className="text-xs text-gray-400 mb-1">Probabilidades Actuales</div>
-                        <div className="flex justify-center space-x-2">
-                          <div className="px-2 sm:px-3 py-1 bg-green-500/20 rounded text-green-400 text-xs sm:text-sm">
+                        <div className="flex justify-center space-x-1 sm:space-x-2">
+                          <div className="px-1 sm:px-2 lg:px-3 py-1 bg-green-500/20 rounded text-green-400 text-xs sm:text-sm">
                             SÍ {calculateOdds(market, 'yes')}%
                           </div>
-                          <div className="px-2 sm:px-3 py-1 bg-red-500/20 rounded text-red-400 text-xs sm:text-sm">
+                          <div className="px-1 sm:px-2 lg:px-3 py-1 bg-red-500/20 rounded text-red-400 text-xs sm:text-sm">
                             NO {calculateOdds(market, 'no')}%
                           </div>
                         </div>
@@ -630,13 +630,13 @@ function FlarePredictApp() {
           </div>
 
           {/* Sidebar - Bet Panel */}
-          <div className="space-y-4 lg:space-y-6">
+          <div className="space-y-4 lg:space-y-6 overflow-hidden">
             {/* Selected Market Details */}
             {selectedMarket && (
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="bg-white/10 backdrop-blur-md rounded-xl p-4 sm:p-6 border border-white/20 lg:sticky lg:top-4"
+                className="bg-white/10 backdrop-blur-md rounded-xl p-4 sm:p-6 border border-white/20 lg:sticky lg:top-4 overflow-hidden"
               >
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
                   <h3 className="text-base sm:text-lg font-semibold text-white">Colocar Apuesta</h3>
@@ -769,7 +769,7 @@ function FlarePredictApp() {
             <ContractInfo />
 
             {/* Live Activity Feed */}
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 sm:p-6 border border-white/20">
+            <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 sm:p-6 border border-white/20 overflow-hidden">
                <div className="flex items-center justify-between mb-3 sm:mb-4">
                  <h3 className="text-base sm:text-lg font-semibold text-white flex items-center">
                    <Activity className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
